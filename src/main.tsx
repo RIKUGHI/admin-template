@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react"
 import ReactDOM from "react-dom/client"
-import { BrowserRouter, Outlet, Route, Routes, Link } from "react-router-dom"
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom"
+import { Navigation } from "./components/organisms"
 import "./index.css"
 
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"))
@@ -9,10 +10,7 @@ const Error = lazy(() => import("./pages/Error.tsx"))
 const AdminLayout = () => {
   return (
     <div className="bb flex h-screen overflow-hidden">
-      <div className="w-[300px]">
-        abcdxec
-        <Link to="/a">a</Link>
-      </div>
+      <Navigation />
       <div className="flex-1 bg-green-200">
         <Outlet />
       </div>
@@ -38,7 +36,15 @@ ReactDOM.createRoot(document.getElementById("raphael") as HTMLElement).render(
             path="/a"
             element={
               <Suspense fallback={<h1 className="m-auto block">Loading...</h1>}>
-                <Dashboard />
+                a
+              </Suspense>
+            }
+          />
+          <Route
+            path="/b"
+            element={
+              <Suspense fallback={<h1 className="m-auto block">Loading...</h1>}>
+                b
               </Suspense>
             }
           />
