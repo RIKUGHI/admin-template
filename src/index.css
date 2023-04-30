@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .scrollbar-interactive {
+    mask-image: linear-gradient(to top, transparent, black),
+    linear-gradient(to left, transparent 8px, black 8px);
+    mask-size: 100% 20000px;
+    mask-position: left bottom;
+    -webkit-mask-image: linear-gradient(to top, transparent, black),
+      linear-gradient(to left, transparent 8px, black 8px);
+    -webkit-mask-size: 100% 20000px;
+    -webkit-mask-position: left bottom;
+  }
+
+  .scrollbar-interactive:hover {
+    -webkit-mask-position: left top;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    @apply w-2
+  } 
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    @apply bg-blue-600
+  }
+}
+
 @layer utilities {
   .bb {
     @apply border border-black

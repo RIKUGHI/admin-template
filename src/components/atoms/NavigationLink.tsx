@@ -24,9 +24,7 @@ const NavigationLink: FC<NavigationProps> = ({
         active ? "bg-green-200" : "hover:bg-green-100"
       )}
     >
-      <div className="mr-2">
-        <Icon className="text-lg" />
-      </div>
+      <Icon className="mr-2 text-lg" />
       <span className="truncate">{name}</span>
     </Link>
   )
