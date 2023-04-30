@@ -1,4 +1,3 @@
-import { useRef } from "react"
 import { IoDesktopOutline, IoListOutline } from "react-icons/io5"
 import { NavigationLink, NavigationProps, Scrollable } from "../atoms"
 import { NestedNavigation } from "../molecules"
@@ -61,8 +60,6 @@ const navigations: INavigation[] = [
 ]
 
 const Navigation = () => {
-  const ref = useRef<HTMLDivElement>(null)
-
   return (
     <aside className="flex w-60 max-w-[240px] flex-col">
       <div className="bb flex items-center p-2">
