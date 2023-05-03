@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom"
-import { AdminLayout, Navigation } from "./components/organisms"
+import { AdminLayout } from "./components/organisms"
 import "./index.css"
 
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"))

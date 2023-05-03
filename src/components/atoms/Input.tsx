@@ -2,6 +2,9 @@ import clsx from "clsx"
 import { FC } from "react"
 
 interface Props {
+  /**
+   * Hello world
+   */
   style?: "base" | "standart"
 }
 

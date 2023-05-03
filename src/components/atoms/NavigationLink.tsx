@@ -17,8 +17,8 @@ const NavigationLink: FC<NavigationProps> = ({
   icon: Icon,
 }) => {
   return (
-    <Link
-      to={to}
+    <a
+      href={to}
       className={clsx(
         "flex items-center rounded-md p-2 text-sm font-medium",
         active ? "bg-green-200" : "hover:bg-green-100"
@@ -26,7 +26,7 @@ const NavigationLink: FC<NavigationProps> = ({
     >
       <Icon className="mr-2 text-lg" />
       <span className="truncate">{name}</span>
-    </Link>
+    </a>
   )
 }
 
