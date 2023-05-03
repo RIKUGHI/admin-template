@@ -1,8 +1,20 @@
-const Input = () => {
+import clsx from "clsx"
+import { FC } from "react"
+
+interface Props {
+  style?: "base" | "standart"
+}
+
+const Input: FC<Props> = ({ style = "standart" }) => {
   return (
     <input
       type="text"
-      className="h-9 rounded-md border border-gray-300 bg-gray-50 p-2 text-sm transition-border focus:border-blue-500 focus:ring-blue-500"
+      className={clsx(
+        "h-9 rounded-md bg-gray-50 p-2 text-sm",
+        style == "base"
+          ? "border-none focus:ring-transparent"
+          : "border border-gray-300 transition focus:border-blue-500 focus:ring-blue-500"
+      )}
     />
   )
 }

@@ -1,10 +1,10 @@
 import { FC } from "react"
-import { IoDesktopOutline, IoDownload } from "react-icons/io5"
+import { FaPlus } from "react-icons/fa"
 
 const IconButton: FC = () => {
   return (
-    <button className="block">
-      <IoDesktopOutline className="text-xl text-green-600" />
+    <button className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-300">
+      <FaPlus className="text-lg text-green-600" />
     </button>
   )
 }
