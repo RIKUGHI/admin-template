@@ -1,6 +1,7 @@
 import { IoDesktopOutline, IoListOutline } from "react-icons/io5"
 import { NavigationLink, NavigationProps, Scrollable } from "../atoms"
 import { NestedNavigation } from "../molecules"
+import { FaDesktop, FaListUl } from "react-icons/fa"
 
 interface INavigation extends NavigationProps {
   hasSubs?: NavigationProps[]
@@ -10,23 +11,23 @@ const navigations: INavigation[] = [
   {
     to: "/",
     name: "Dashboard",
-    icon: IoDesktopOutline,
+    icon: FaDesktop,
     active: true,
   },
   {
     to: "/a",
     name: "Go to a",
-    icon: IoDesktopOutline,
+    icon: FaDesktop,
   },
   {
     to: "/b",
     name: "Go to b",
-    icon: IoDesktopOutline,
+    icon: FaDesktop,
   },
   {
     to: "/master",
     name: "Master",
-    icon: IoDesktopOutline,
+    icon: FaListUl,
     hasSubs: [
       {
         to: "/a",
@@ -43,7 +44,7 @@ const navigations: INavigation[] = [
   {
     to: "/mastera",
     name: "Master A",
-    icon: IoDesktopOutline,
+    icon: FaListUl,
     hasSubs: [
       {
         to: "/a",
@@ -61,8 +62,8 @@ const navigations: INavigation[] = [
 
 const Navigation = () => {
   return (
-    <aside className="flex w-60 max-w-[240px] flex-col">
-      <div className="bb flex items-center p-2">
+    <aside className="flex w-60 max-w-[240px] flex-col bg-white">
+      <div className="flex items-center border-b border-black px-2 py-3">
         <div className="bb mr-2 h-12 w-12 min-w-[48px] rounded-full"></div>
         <div className="flex flex-col">
           <span className="font-medium">My Name lorem</span>
@@ -75,7 +76,7 @@ const Navigation = () => {
             <NestedNavigation
               key={i}
               name={navigation.name}
-              icon={IoListOutline}
+              icon={navigation.icon}
               navigations={navigation.hasSubs}
             />
           ) : (

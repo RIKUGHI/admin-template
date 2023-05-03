@@ -24,7 +24,7 @@
 
   .scrollbar::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    @apply bg-blue-600
+    @apply bg-green-600
   }
 }
 
