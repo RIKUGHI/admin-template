@@ -1,7 +1,7 @@
 import { IoDesktopOutline, IoListOutline } from "react-icons/io5"
 import { NavigationLink, NavigationProps, Scrollable } from "../atoms"
 import { NestedNavigation } from "../molecules"
-import { FaDesktop, FaListUl } from "react-icons/fa"
+import { FaDesktop, FaListUl, FaPlus } from "react-icons/fa"
 
 interface INavigation extends NavigationProps {
   hasSubs?: NavigationProps[]
@@ -11,7 +11,7 @@ const navigations: INavigation[] = [
   {
     to: "/",
     name: "Dashboard",
-    icon: FaDesktop,
+    icon: FaPlus,
     active: true,
   },
   {
@@ -62,7 +62,7 @@ const navigations: INavigation[] = [
 
 const Navigation = () => {
   return (
-    <aside className="flex w-60 max-w-[240px] flex-col bg-white">
+    <aside className="flex w-60 max-w-[240px] flex-col bg-white shadow-md">
       <div className="flex items-center border-b border-black px-2 py-3">
         <div className="bb mr-2 h-12 w-12 min-w-[48px] rounded-full"></div>
         <div className="flex flex-col">
