@@ -5,11 +5,7 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      transitionProperty: {
-        border: 'border'
-      }
-    },
+    extend: {},
   },
   plugins: [require('@tailwindcss/forms')],
 }
