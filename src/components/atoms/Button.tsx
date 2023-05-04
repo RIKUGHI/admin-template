@@ -3,9 +3,21 @@ import { FC } from "react"
 import { IconType } from "react-icons"
 
 interface Props {
+  /**
+   * React-icons component
+   */
   icon?: IconType
+  /**
+   * What style to use
+   */
   style?: "solid" | "outlined"
+  /**
+   * What color to use
+   */
   color?: "primary" | "blue" | "red"
+  /**
+   * Button name
+   */
   name?: string
 }
 
@@ -48,9 +60,7 @@ const Button: FC<Props> = ({
           })}
         />
       )}
-      {name && (
-        <span className={clsx(style == "solid" && "font-medium")}>{name}</span>
-      )}
+      {name && <span className={clsx(!Icon && "font-medium")}>{name}</span>}
     </button>
   )
 }
