@@ -7,18 +7,10 @@ interface Props {
    * React-icons component
    */
   icon?: IconType
-  /**
-   * What style to use
-   */
   style?: "solid" | "outlined"
-  /**
-   * What color to use
-   */
   color?: "primary" | "blue" | "red"
-  /**
-   * Button name
-   */
   name?: string
+  disabled?: boolean
 }
 
 const Button: FC<Props> = ({
@@ -26,6 +18,7 @@ const Button: FC<Props> = ({
   style = "solid",
   color = "primary",
   name,
+  disabled,
 }) => {
   return (
     <button
@@ -35,22 +28,27 @@ const Button: FC<Props> = ({
           ? [
               "text-white",
               {
-                "bg-green-600": color == "primary",
-                "bg-blue-600": color == "blue",
-                "bg-red-600": color == "red",
+                "bg-green-600": color == "primary" && !disabled,
+                "bg-blue-600": color == "blue" && !disabled,
+                "bg-red-600": color == "red" && !disabled,
+                "bg-gray-300": disabled,
               },
             ]
           : [
               "border",
               {
                 "border-green-600 bg-green-50 text-green-600":
-                  color == "primary",
-                "border-blue-600 bg-blue-50 text-blue-600": color == "blue",
-                "border-red-600 bg-red-50 text-red-600": color == "red",
+                  color == "primary" && !disabled,
+                "border-blue-600 bg-blue-50 text-blue-600":
+                  color == "blue" && !disabled,
+                "border-red-600 bg-red-50 text-red-600":
+                  color == "red" && !disabled,
+                "border-gray-300 bg-gray-50 text-gray-300": disabled,
               },
             ],
         name ? "px-3" : "w-9"
       )}
+      disabled={disabled}
     >
       {Icon && (
         <Icon
@@ -60,7 +58,11 @@ const Button: FC<Props> = ({
           })}
         />
       )}
-      {name && <span className={clsx(!Icon && "font-medium")}>{name}</span>}
+      {name && (
+        <span className={clsx((style == "solid" || !Icon) && "font-medium")}>
+          {name}
+        </span>
+      )}
     </button>
   )
 }

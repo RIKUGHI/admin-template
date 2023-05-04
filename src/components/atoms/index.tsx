@@ -5,4 +5,3 @@ export {
   type NavigationProps,
 } from "./NavigationLink"
 export { default as Scrollable } from "./Scrollable"
-export { default as IconButton } from "./buttons/IconButton"
