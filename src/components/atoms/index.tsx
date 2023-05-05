@@ -6,3 +6,4 @@ export {
 } from "./NavigationLink"
 export { default as Scrollable } from "./Scrollable"
 export { default as Table } from "./Table.tsx"
+export { default as Checkbox } from "./Checkbox.tsx"
