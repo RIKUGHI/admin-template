@@ -1,21 +1,15 @@
-import {
-  FaFilter,
-  FaPen,
-  FaPlus,
-  FaTrashAlt,
-  FaTrashRestore,
-} from "react-icons/fa"
-import { Header, ManagementLayout } from "../components/organisms"
+import { FaFilter, FaPen, FaPlus, FaTrashAlt } from "react-icons/fa"
+import { Button, Checkbox, Table } from "../components/atoms"
 import { FormSearch } from "../components/molecules"
-import { Button, Table } from "../components/atoms"
-import Test from "../components/atoms/Test"
+import { ManagementLayout } from "../components/organisms"
 
 const Dashboard = () => {
   return (
     <ManagementLayout>
       {/* <Header /> */}
-      <div className="rounded-md bg-white p-5 shadow-md">
-        <div className="mb-5 flex items-center justify-between">
+
+      <div className="space-y-5 rounded-md bg-white p-5 shadow-md">
+        <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold">Daftar</h3>
           <div className="flex space-x-2">
             <Button icon={FaTrashAlt} style="outlined" color="red" disabled />
@@ -24,9 +18,14 @@ const Dashboard = () => {
             <Button icon={FaPlus} name="Tambah" />
           </div>
         </div>
-        <Table>
+        <Table sticky>
           <Table.Thead>
             <Table.Row>
+              <Table.Head className="w-4 p-4">
+                <div className="flex items-center">
+                  <Checkbox />
+                </div>
+              </Table.Head>
               <Table.Head>Product name</Table.Head>
               <Table.Head>Color</Table.Head>
               <Table.Head>Category</Table.Head>
@@ -39,6 +38,11 @@ const Dashboard = () => {
           </Table.Thead>
           <Table.Tbody>
             <Table.Row styled>
+              <Table.Cell className="p-4">
+                <div className="flex items-center">
+                  <Checkbox />
+                </div>
+              </Table.Cell>
               <Table.Cell>Apple MacBook Pro 17"</Table.Cell>
               <Table.Cell>SILVER</Table.Cell>
               <Table.Cell>Laptop</Table.Cell>
@@ -46,11 +50,37 @@ const Dashboard = () => {
               <Table.Cell>Yes</Table.Cell>
               <Table.Cell>$2999</Table.Cell>
               <Table.Cell>3.0 lb.</Table.Cell>
+              <Table.Cell>
+                <div className="flex items-center space-x-1.5">
+                  <Button icon={FaPen} style="outlined" color="blue" />
+                  <Button icon={FaTrashAlt} style="outlined" color="red" />
+                </div>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row styled>
+              <Table.Cell className="p-4">
+                <div className="flex items-center">
+                  <Checkbox />
+                </div>
+              </Table.Cell>
+              <Table.Cell>Apple MacBook Pro 17"</Table.Cell>
+              <Table.Cell>SILVER</Table.Cell>
+              <Table.Cell>Laptop</Table.Cell>
+              <Table.Cell>Yes</Table.Cell>
+              <Table.Cell>Yes</Table.Cell>
+              <Table.Cell>$2999</Table.Cell>
+              <Table.Cell>3.0 lb.</Table.Cell>
+              <Table.Cell>
+                <div className="flex items-center space-x-1.5">
+                  <Button icon={FaPen} style="outlined" color="blue" />
+                  <Button icon={FaTrashAlt} style="outlined" color="red" />
+                </div>
+              </Table.Cell>
             </Table.Row>
           </Table.Tbody>
         </Table>
-        <Test />
-        <div className="bb mt-5 h-[500px]"></div>
+
+        <div className="bb h-[800px]"></div>
       </div>
     </ManagementLayout>
   )
