@@ -9,7 +9,7 @@ interface RowProps {
 }
 
 const Thead: FC<PropsWithChildren> = ({ children }) => (
-  <thead className="bg-gray-50 text-xs uppercase">{children}</thead>
+  <thead className="bg-gray-50 text-xs uppercase shadow-md">{children}</thead>
 )
 const Tbody: FC<PropsWithChildren> = ({ children }) => <tbody>{children}</tbody>
 const Row: FC<PropsWithChildren<RowProps>> = ({ children, styled }) => (
@@ -24,6 +24,10 @@ const Cell: FC<PropsWithChildren<CommonProps>> = ({ children, className }) => (
   <td className={clsx(className ?? "px-6 py-4")}>{children}</td>
 )
 
+interface TableProps {
+  sticky?: boolean
+}
+
 interface SubComponents {
   Thead: FC<PropsWithChildren>
   Tbody: FC<PropsWithChildren>
@@ -32,10 +36,19 @@ interface SubComponents {
   Cell: FC<PropsWithChildren<CommonProps>>
 }
 
-const Table: FC<PropsWithChildren> & SubComponents = ({ children }) => {
+const Table: FC<PropsWithChildren<TableProps>> & SubComponents = ({
+  children,
+  sticky,
+}) => {
   return (
     <div className="scrollbar overflow-x-auto">
-      <table className="w-full text-left text-sm">{children}</table>
+      {sticky ? (
+        <table className="w-full text-left text-sm" data-sticky>
+          {children}
+        </table>
+      ) : (
+        <table className="w-full text-left text-sm">{children}</table>
+      )}
     </div>
   )
 }
