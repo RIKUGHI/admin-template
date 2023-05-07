@@ -5,16 +5,16 @@ import { ManagementLayout } from "../../components/organisms"
 
 const CopyTable = ({
   sticky,
-  withCheckbox,
+  withActions,
 }: {
   sticky?: boolean
-  withCheckbox?: boolean
+  withActions?: boolean
 }) => {
   return (
     <Table sticky={sticky}>
       <Table.Thead>
         <Table.Row>
-          {withCheckbox && (
+          {withActions && (
             <Table.Head className="w-4 p-4">
               <div className="flex items-center">
                 <Checkbox />
@@ -28,13 +28,13 @@ const CopyTable = ({
           <Table.Head>Available</Table.Head>
           <Table.Head>Price</Table.Head>
           <Table.Head>Weight</Table.Head>
-          <Table.Head>Action</Table.Head>
+          {withActions && <Table.Head>Action</Table.Head>}
         </Table.Row>
       </Table.Thead>
       <Table.Tbody>
         {Array.from({ length: 2 }).map((_, i) => (
           <Table.Row key={i} styled>
-            {withCheckbox && (
+            {withActions && (
               <Table.Cell className="p-4">
                 <div className="flex items-center">
                   <Checkbox />
@@ -48,12 +48,14 @@ const CopyTable = ({
             <Table.Cell>Yes</Table.Cell>
             <Table.Cell>$2999</Table.Cell>
             <Table.Cell>3.0 lb.</Table.Cell>
-            <Table.Cell>
-              <div className="flex items-center space-x-1.5">
-                <Button icon={FaPen} style="outlined" color="blue" />
-                <Button icon={FaTrashAlt} style="outlined" color="red" />
-              </div>
-            </Table.Cell>
+            {withActions && (
+              <Table.Cell>
+                <div className="flex items-center space-x-1.5">
+                  <Button icon={FaPen} style="outlined" color="blue" />
+                  <Button icon={FaTrashAlt} style="outlined" color="red" />
+                </div>
+              </Table.Cell>
+            )}
           </Table.Row>
         ))}
       </Table.Tbody>
@@ -74,8 +76,8 @@ export const Default: Story = {
   render: () => <CopyTable />,
 }
 
-export const WithCheckbox: Story = {
-  render: () => <CopyTable withCheckbox />,
+export const WithActions: Story = {
+  render: () => <CopyTable withActions />,
 }
 
 export const WithStickyHeader: Story = {
