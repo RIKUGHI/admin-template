@@ -17,12 +17,14 @@ const Row: FC<PropsWithChildren<RowProps>> = ({ children, styled }) => (
     {children}
   </tr>
 )
-const Head: FC<PropsWithChildren<CommonProps>> = ({ children, className }) => (
-  <th className={clsx(className ?? "px-6 py-3")}>{children}</th>
-)
-const Cell: FC<PropsWithChildren<CommonProps>> = ({ children, className }) => (
-  <td className={clsx(className ?? "px-6 py-4")}>{children}</td>
-)
+const Head: FC<PropsWithChildren<CommonProps>> = ({
+  children,
+  className = "px-6 py-3",
+}) => <th className={clsx(className)}>{children}</th>
+const Cell: FC<PropsWithChildren<CommonProps>> = ({
+  children,
+  className = "px-6 py-4",
+}) => <td className={clsx(className)}>{children}</td>
 
 interface TableProps {
   sticky?: boolean
