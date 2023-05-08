@@ -3,7 +3,7 @@ import { Button } from "../../components/atoms"
 import { FaPlus } from "react-icons/fa"
 
 const meta: Meta<typeof Button> = {
-  title: "Components/Atoms/Button",
+  title: "Components/Button",
   component: Button,
   tags: ["autodocs"],
 }

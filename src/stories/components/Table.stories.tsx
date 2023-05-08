@@ -64,7 +64,7 @@ const CopyTable = ({
 }
 
 const meta: Meta<typeof Table> = {
-  title: "Components/Atoms/Table",
+  title: "Components/Table",
   component: Table,
   tags: ["autodocs"],
 }
