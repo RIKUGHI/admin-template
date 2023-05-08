@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { Pagination } from "../../components/atoms"
+import { Pagination } from "../../components/molecules"
 
 const meta: Meta<typeof Pagination> = {
   title: "Components/Atoms/Pagination",

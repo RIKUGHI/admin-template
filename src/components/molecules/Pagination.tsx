@@ -1,53 +1,5 @@
-import clsx from "clsx"
 import { useState } from "react"
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
-
-interface LinkProps {
-  no: number
-  currentPage?: number
-  totalPages?: number
-  prev?: boolean
-  next?: boolean
-  onClick?: () => void
-}
-
-const Link = ({
-  no,
-  currentPage,
-  totalPages,
-  prev,
-  next,
-  onClick,
-}: LinkProps) => {
-  return (
-    <button
-      className={clsx(
-        "font- relative inline-flex items-center border px-4 py-2",
-        {
-          "border-gray-300 bg-white text-gray-500 hover:bg-gray-50":
-            currentPage != no,
-          "z-10 border-green-600 bg-green-50 text-green-600": currentPage == no,
-          "rounded-l-md": (currentPage == 1 && no == 1) || prev,
-          "rounded-r-md":
-            (currentPage == totalPages && no == totalPages) || next,
-        }
-      )}
-      onClick={onClick}
-    >
-      {prev && <FaChevronLeft className="text-xs" />}
-      {!prev && !next && no}
-      {next && <FaChevronRight className="text-xs" />}
-    </button>
-  )
-}
-
-const Separator = () => {
-  return (
-    <span className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 font-medium text-gray-500">
-      ...
-    </span>
-  )
-}
+import { PaginationLink } from "../atoms"
 
 interface PaginationProps {
   limit: number
@@ -79,7 +31,7 @@ const Pagination = ({
       </p>
       <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm">
         {currentPage > 1 && (
-          <Link
+          <PaginationLink
             no={currentPage - 1}
             prev
             onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -87,8 +39,8 @@ const Pagination = ({
         )}
         {totalPages > 6 && currentPage >= 4 && (
           <>
-            <Link no={1} onClick={() => setCurrentPage(1)} />
-            {currentPage > 4 && <Separator />}
+            <PaginationLink no={1} onClick={() => setCurrentPage(1)} />
+            {currentPage > 4 && <PaginationLink no={0} separtorOnly />}
           </>
         )}
 
@@ -111,7 +63,7 @@ const Pagination = ({
 
           for (let i = firstPage; i <= iterate; i++) {
             links[i] = (
-              <Link
+              <PaginationLink
                 key={i}
                 no={i}
                 currentPage={currentPage}
@@ -126,12 +78,17 @@ const Pagination = ({
 
         {totalPages > 6 && currentPage <= totalPages - 3 && (
           <>
-            {currentPage < totalPages - 3 && <Separator />}
-            <Link no={totalPages} onClick={() => setCurrentPage(totalPages)} />
+            {currentPage < totalPages - 3 && (
+              <PaginationLink no={0} separtorOnly />
+            )}
+            <PaginationLink
+              no={totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            />
           </>
         )}
         {currentPage < totalPages && (
-          <Link
+          <PaginationLink
             no={totalPages}
             next
             onClick={() => setCurrentPage((prev) => prev + 1)}
