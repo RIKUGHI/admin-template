@@ -7,13 +7,15 @@ export interface NavigationProps {
   name: string
   to: string
   active?: boolean
-  icon: IconType
+  style?: "primary" | "secondary"
+  icon?: IconType
 }
 
 const NavigationLink: FC<NavigationProps> = ({
   to,
   name,
   active,
+  style = "primary",
   icon: Icon,
 }) => {
   return (
@@ -21,11 +23,17 @@ const NavigationLink: FC<NavigationProps> = ({
       href={to}
       className={clsx(
         "flex items-center rounded-md p-2 text-sm font-medium",
-        active ? "bg-green-200" : "hover:bg-green-100"
+        active
+          ? style == "primary"
+            ? "bg-green-200"
+            : "text-green-600"
+          : style == "primary"
+          ? "hover:bg-green-100"
+          : "hover:text-green-600"
       )}
     >
-      <Icon className="mr-2 text-lg" />
-      <span className="truncate">{name}</span>
+      {Icon && <Icon className="min-w-[18px] text-lg" />}
+      <span className="ml-2 truncate">{name}</span>
     </a>
   )
 }

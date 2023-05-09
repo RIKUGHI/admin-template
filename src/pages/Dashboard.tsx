@@ -10,33 +10,23 @@ import {
   FaTrashAlt,
 } from "react-icons/fa"
 import { Button, Checkbox, Table } from "../components/atoms"
-import { FormSearch, Pagination } from "../components/molecules"
+import { FormSearch, Pagination, Alert } from "../components/molecules"
 import { ManagementLayout } from "../components/organisms"
 
 const Dashboard = () => {
   return (
     <ManagementLayout>
-      <div className="relative overflow-hidden rounded-md bg-green-50 px-3 py-2">
-        <div className="absolute -left-2 -top-0.5 rounded-full bg-green-200 p-2">
-          <FaInfo className="text-white" />
-        </div>
-        <div className="relative z-10 flex flex-col text-green-800">
-          <span className="font-bold">Info</span>
-          <p className="text-sm">Data berhasil ditambahkan</p>
-          <ul className="ml-4 list-inside list-disc text-sm">
-            <li>At least 10 characters (and up to 100 characters)</li>
-            <li>At least one lowercase character</li>
-            <li>Inclusion of at least one special character, e.g., ! @ # ?</li>
-          </ul>
-        </div>
-        <button
-          className="absolute right-1 top-1 z-10 p-0.5"
-          onClick={() => console.log("wew")}
-        >
-          <FaTimes className="text-xs text-gray-400" />
-        </button>
-      </div>
-
+      a
+      {/* <Alert>
+        <p className="text-sm">Data berhasil ditambahkan</p>
+        <Alert.List
+          lists={[
+            "At least 10 characters (and up to 100 characters)",
+            "At least one lowercase character",
+            "Inclusion of at least one special character, e.g., ! @ # ?",
+          ]}
+        />
+      </Alert>
       <div className="space-y-5 rounded-md bg-white p-5 shadow-md">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold">Daftar</h3>
@@ -98,7 +88,7 @@ const Dashboard = () => {
         totalData={1}
         currentPage={5}
         totalPages={10}
-      />
+      /> */}
     </ManagementLayout>
   )
 }

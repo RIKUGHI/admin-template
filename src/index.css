@@ -26,6 +26,31 @@
     border-radius: 5px;
     @apply bg-gray-500
   }
+
+  aside[data-view='1'] {
+    @apply w-60 max-w-[240px]
+  }
+
+  aside[data-view='2'] {
+
+  }
+
+  aside[data-view='2'] span,
+  aside[data-view='2'] svg:last-child,
+  aside[data-view='2'] div[data-view='2'] {
+    @apply hidden
+  }
+
+  aside[data-view='2']:hover {
+    @apply w-60
+  }
+
+  aside[data-view='2']:hover span, 
+  aside[data-view='2']:hover svg:last-child, 
+  aside[data-view='2']:hover div[data-view='2'] {
+    @apply block
+  }
+
 }
 
 @layer utilities {

@@ -34,12 +34,12 @@ const navigations: INavigation[] = [
     hasSubs: [
       {
         to: "/a",
-        name: "Master to sub a",
+        name: "User",
         active: true,
       },
       {
         to: "/b",
-        name: "Go to sub b",
+        name: "Medrep",
       },
       {
         to: "/b",
@@ -47,25 +47,25 @@ const navigations: INavigation[] = [
       },
     ],
   },
-  // {
-  //   to: "/mastera",
-  //   name: "Master A",
-  //   icon: FaListUl,
-  //   hasSubs: [
-  //     {
-  //       to: "/a",
-  //       name: "Go to sub a",
-  //     },
-  //     {
-  //       to: "/b",
-  //       name: "Go to sub b",
-  //     },
-  //   ],
-  // },
+  {
+    to: "/mastera",
+    name: "Master A",
+    icon: FaListUl,
+    hasSubs: [
+      {
+        to: "/a",
+        name: "Go to sub a",
+      },
+      {
+        to: "/b",
+        name: "Go to sub b",
+      },
+    ],
+  },
 ]
 
 navigations.push(
-  ...Array.from({ length: 10 }).map(() => {
+  ...Array.from({ length: 4 }).map(() => {
     return {
       to: "/",
       name: "Dashboard",
@@ -77,19 +77,19 @@ navigations.push(
 
 const Navigation = () => {
   return (
-    <aside className="scrollbar z-20 w-60 max-w-[240px] overflow-auto">
-      <div className="flex flex-col bg-white shadow-md">
-        {/* <aside className="z-20 flex w-[58px] max-w-[240px] flex-col bg-white shadow-md"> */}
-        <div className="flex items-center border-b border-black px-2 py-3">
+    <aside
+      className="scrollbar fixed inset-y-0 z-20 overflow-y-auto drop-shadow-md transition-all duration-300"
+      data-view="2"
+    >
+      <div className="flex min-h-full flex-col bg-white">
+        {/* <div className="flex items-center border-b border-black px-2 py-3">
           <div className="bb mr-2 h-12 w-12 min-w-[48px] rounded-full"></div>
           <div className="flex flex-col">
             <span className="font-medium">My Name lorem</span>
             <span className="text-sm">My Role</span>
           </div>
-        </div>
-        {/* <Scrollable>
-      </Scrollable> */}
-        <div className="space-y-1 px-3 py-2">
+        </div> */}
+        <div className="space-y-1 p-2 px-3">
           {navigations.map((navigation, i) =>
             navigation.hasSubs ? (
               <NestedNavigation
