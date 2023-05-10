@@ -15,8 +15,17 @@ const PaginationLink = ({
   no,
   currentPage,
   totalPages,
+  /**
+   * Will display the icon
+   */
   prev,
+  /**
+   * Will display the icon
+   */
   next,
+  /**
+   * If true, component will be span element
+   */
   separtorOnly,
   onClick,
 }: Props) => {
