@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { FC, useState } from "react"
-import { IconType } from "react-icons"
 import { IoChevronDown } from "react-icons/io5"
 import { NavigationLink, NavigationProps } from "../atoms"
 
