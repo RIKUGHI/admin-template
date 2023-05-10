@@ -3,6 +3,7 @@ import { NavigationLink, NavigationProps, Scrollable } from "../atoms"
 import TextT from "../atoms/Text"
 import { NestedNavigation } from "../molecules"
 import { FaDesktop, FaListUl, FaPlus } from "react-icons/fa"
+import { useEffect, useRef, useState } from "react"
 
 interface INavigation extends NavigationProps {
   hasSubs?: NavigationProps[]
@@ -10,54 +11,54 @@ interface INavigation extends NavigationProps {
 
 const navigations: INavigation[] = [
   {
-    to: "/",
+    href: "/",
     name: "Dashboard",
     icon: FaPlus,
     active: true,
   },
   {
-    to: "/a",
+    href: "/a",
     name: "Go to a",
     icon: FaDesktop,
   },
   {
-    to: "/b",
+    href: "/b",
     name: "Go to b",
     icon: FaDesktop,
     // active: true,
   },
   {
-    to: "/master",
+    href: "/master",
     name: "Master",
     icon: FaListUl,
     active: true,
     hasSubs: [
       {
-        to: "/a",
+        href: "/a",
         name: "User",
         active: true,
       },
       {
-        to: "/b",
+        href: "/b",
         name: "Medrep",
       },
       {
-        to: "/b",
+        href: "/b",
         name: "Sapi",
       },
     ],
   },
   {
-    to: "/mastera",
+    href: "/mastera",
     name: "Master A",
     icon: FaListUl,
     hasSubs: [
       {
-        to: "/a",
+        href: "/a",
         name: "Go to sub a",
       },
       {
-        to: "/b",
+        href: "/b",
         name: "Go to sub b",
       },
     ],
@@ -67,7 +68,7 @@ const navigations: INavigation[] = [
 navigations.push(
   ...Array.from({ length: 4 }).map(() => {
     return {
-      to: "/",
+      href: "/",
       name: "Dashboard",
       icon: FaPlus,
       active: true,
@@ -75,21 +76,47 @@ navigations.push(
   })
 )
 
+/**
+ * 3 different views (data-view)
+ *
+ * 1 = static that has scrollbar or not
+ * 2 = auto close that has no scrollbar
+ * 3 = auto close that has scrollbar
+ */
 const Navigation = () => {
+  const asideRef = useRef<HTMLElement>(null)
+  const [hasScrollbar, setHasScrollbar] = useState(false)
+
+  useEffect(() => {
+    setHasScrollbar(
+      (asideRef.current &&
+        asideRef.current.scrollHeight > asideRef.current.clientHeight) ||
+        false
+    )
+  }, [])
+
   return (
     <aside
+      ref={asideRef}
       className="scrollbar fixed inset-y-0 z-20 overflow-y-auto drop-shadow-md transition-all duration-300"
-      data-view="2"
+      // data-view={hasScrollbar ? "3" : "2"}
+      data-view="1"
     >
       <div className="flex min-h-full flex-col bg-white">
-        {/* <div className="flex items-center border-b border-black px-2 py-3">
-          <div className="bb mr-2 h-12 w-12 min-w-[48px] rounded-full"></div>
-          <div className="flex flex-col">
-            <span className="font-medium">My Name lorem</span>
+        <div
+          id="header"
+          className="flex items-center border-b border-black px-2 py-3"
+        >
+          <div className="bb h-12 w-12 min-w-[48px] rounded-full transition-all duration-300"></div>
+          <div className="ml-2 flex flex-col">
+            <span className="whitespace-nowrap font-medium">My Name lorem</span>
             <span className="text-sm">My Role</span>
           </div>
-        </div> */}
-        <div className="space-y-1 p-2 px-3">
+        </div>
+        <div
+          id="wrapper"
+          className="space-y-1 py-2 transition-all duration-300"
+        >
           {navigations.map((navigation, i) =>
             navigation.hasSubs ? (
               <NestedNavigation
@@ -102,7 +129,7 @@ const Navigation = () => {
             ) : (
               <NavigationLink
                 key={i}
-                to={navigation.to}
+                href={navigation.href}
                 name={navigation.name}
                 active={navigation.active}
                 icon={navigation.icon}

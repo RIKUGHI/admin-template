@@ -14,7 +14,7 @@ const NestedNavigation: FC<Props> = ({
   active,
   navigations,
 }) => {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(!open)
 
   return (
@@ -32,19 +32,23 @@ const NestedNavigation: FC<Props> = ({
           className={clsx("ml-auto text-lg", open && "rotate-180")}
         />
       </button>
-      {open && (
-        <div className="ml-[26px] mt-1 space-y-1" data-view="2">
-          {navigations.map((navigation, i) => (
-            <NavigationLink
-              key={i}
-              to={navigation.to}
-              name={navigation.name}
-              active={navigation.active}
-              style="secondary"
-            />
-          ))}
-        </div>
-      )}
+      <div
+        id="wrapper-sub"
+        className={clsx(
+          "trasition-all ml-[26px] space-y-1 duration-300",
+          open && "active-wrapper-sub"
+        )}
+      >
+        {navigations.map((navigation, i) => (
+          <NavigationLink
+            key={i}
+            href={navigation.href}
+            name={navigation.name}
+            active={navigation.active}
+            style="secondary"
+          />
+        ))}
+      </div>
     </div>
   )
 }

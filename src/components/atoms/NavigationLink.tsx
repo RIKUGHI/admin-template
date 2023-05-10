@@ -5,22 +5,24 @@ import { Link } from "react-router-dom"
 
 export interface NavigationProps {
   name: string
-  to: string
+  href: string
   active?: boolean
   style?: "primary" | "secondary"
+  buttonOnly?: boolean
   icon?: IconType
 }
 
 const NavigationLink: FC<NavigationProps> = ({
-  to,
+  href,
   name,
   active,
   style = "primary",
+  buttonOnly,
   icon: Icon,
 }) => {
   return (
     <a
-      href={to}
+      href={href}
       className={clsx(
         "flex items-center rounded-md p-2 text-sm font-medium",
         active
