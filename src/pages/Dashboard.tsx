@@ -16,7 +16,6 @@ import { ManagementLayout } from "../components/organisms"
 const Dashboard = () => {
   return (
     <ManagementLayout>
-      a
       {/* <Alert>
         <p className="text-sm">Data berhasil ditambahkan</p>
         <Alert.List
@@ -26,7 +25,7 @@ const Dashboard = () => {
             "Inclusion of at least one special character, e.g., ! @ # ?",
           ]}
         />
-      </Alert>
+      </Alert> */}
       <div className="space-y-5 rounded-md bg-white p-5 shadow-md">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold">Daftar</h3>
@@ -56,7 +55,7 @@ const Dashboard = () => {
             </Table.Row>
           </Table.Thead>
           <Table.Tbody>
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 1 }).map((_, i) => (
               <Table.Row key={i} styled>
                 <Table.Cell className="p-4">
                   <div className="flex items-center">
@@ -81,14 +80,14 @@ const Dashboard = () => {
           </Table.Tbody>
         </Table>
       </div>
-
       <Pagination
         limit={1}
         firstIndex={0}
         totalData={1}
         currentPage={5}
         totalPages={10}
-      /> */}
+      />
+      <div className="bb h-[600px]"></div>
     </ManagementLayout>
   )
 }

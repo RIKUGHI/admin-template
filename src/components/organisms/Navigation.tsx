@@ -64,7 +64,7 @@ const navigations: INavigation[] = [
 ]
 
 navigations.push(
-  ...Array.from({ length: 4 }).map(() => {
+  ...Array.from({ length: 41 }).map(() => {
     return {
       href: "/",
       name: "Dashboard",

@@ -32,11 +32,7 @@ const ManagementLayout: FC<PropsWithChildren> = ({ children }) => {
   }
 
   return (
-    <main
-      ref={mainRef}
-      className="scrollbar bb ml-[50px] space-y-5 overflow-y-auto p-5"
-      onScroll={onScroll}
-    >
+    <main ref={mainRef} className="ml-60 space-y-5 p-5" onScroll={onScroll}>
       {children}
     </main>
   )
