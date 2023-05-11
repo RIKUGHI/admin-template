@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { FC } from "react"
+import { FC, PropsWithChildren } from "react"
 import { IconType } from "react-icons"
 
 interface Props {
@@ -11,6 +11,8 @@ interface Props {
   color?: "primary" | "blue" | "red"
   name?: string
   disabled?: boolean
+  href?: string
+  as?: "button" | "a"
 }
 
 const Button: FC<Props> = ({
@@ -19,9 +21,35 @@ const Button: FC<Props> = ({
   color = "primary",
   name,
   disabled,
+  href,
+  as = "button",
 }) => {
+  const button: FC<PropsWithChildren<{ className?: string }>> = ({
+    children,
+    className,
+  }) => {
+    return (
+      <button className={className} disabled={disabled}>
+        {children}
+      </button>
+    )
+  }
+
+  const a: FC<PropsWithChildren<{ className?: string }>> = ({
+    children,
+    className,
+  }) => {
+    return (
+      <a href={href} className={className}>
+        {children}
+      </a>
+    )
+  }
+
+  const Component = as == "button" ? button : a
+
   return (
-    <button
+    <Component
       className={clsx(
         "flex h-9 items-center justify-center rounded-md",
         style == "solid"
@@ -48,7 +76,6 @@ const Button: FC<Props> = ({
             ],
         name ? "px-3" : "w-9"
       )}
-      disabled={disabled}
     >
       {Icon && (
         <Icon
@@ -63,7 +90,7 @@ const Button: FC<Props> = ({
           {name}
         </span>
       )}
-    </button>
+    </Component>
   )
 }
 
