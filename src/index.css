@@ -27,52 +27,34 @@
     @apply bg-gray-500
   }
 
-  aside[data-view='1'] {
+  aside[data-view='1'] div#wrapper {
     @apply w-60 max-w-[240px]
   }
 
-  aside[data-view='2'], 
-  aside[data-view='3'] {
-    @apply w-[66px]
-  }
-
-  aside[data-view='2'] div#header div:first-child {
-    @apply ml-px
-  }
-
   aside[data-view='2'] div#wrapper {
-    @apply px-4
+    @apply w-16
   }
 
-  aside[data-view='1'] div#wrapper,
-  aside[data-view='3'] div#wrapper {
-    @apply px-3
+  aside[data-view='2'] div#wrapper-menu {
+    @apply px-[15px]
   }
 
-  aside[data-view='1'] div#wrapper-sub,
-  aside[data-view='2'] div#wrapper-sub,
-  aside[data-view='3'] div#wrapper-sub {
+  aside[data-view='1'] div#wrapper-sub-menu,
+  aside[data-view='2'] div#wrapper-sub-menu {
     @apply max-h-0 overflow-hidden
   }
 
-  aside[data-view='2']:hover, 
-  aside[data-view='3']:hover {
+  aside[data-view='2']:hover div#wrapper {
     @apply w-60
   }
 
-  aside[data-view='3'] div#header div:first-child,
-  aside[data-view='2']:hover div#header div:first-child {
-    @apply ml-0
-  }
-
-  aside[data-view='2']:hover div#wrapper, 
-  aside[data-view='3']:hover div#wrapper {
+  aside[data-view='1'] div#wrapper-menu,
+  aside[data-view='2']:hover div#wrapper-menu {
     @apply px-2
   }
 
-  aside[data-view='1'] div#wrapper-sub.active-wrapper-sub,
-  aside[data-view='2']:hover div#wrapper-sub.active-wrapper-sub,
-  aside[data-view='3']:hover div#wrapper-sub.active-wrapper-sub {
+  aside[data-view='1'] div#wrapper-sub-menu.active-wrapper-sub,
+  aside[data-view='2']:hover div#wrapper-sub-menu.active-wrapper-sub {
     /**
      * Calculate max-h-[?]
      * a = 36px is height of NavigationLink component

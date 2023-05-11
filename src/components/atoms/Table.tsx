@@ -27,6 +27,9 @@ const Cell: FC<PropsWithChildren<CommonProps>> = ({
 }) => <td className={clsx(className)}>{children}</td>
 
 interface TableProps {
+  /**
+   * if true, you need to call vanila/sticky_header_table.ts
+   */
   sticky?: boolean
 }
 

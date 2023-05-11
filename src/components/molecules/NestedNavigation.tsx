@@ -32,7 +32,7 @@ const NestedNavigation: FC<Props> = ({
         />
       </button>
       <div
-        id="wrapper-sub"
+        id="wrapper-sub-menu"
         className={clsx(
           "trasition-all ml-[26px] space-y-1 duration-300",
           open && "active-wrapper-sub"

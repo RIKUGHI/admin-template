@@ -8,7 +8,6 @@ export interface NavigationProps {
   href: string
   active?: boolean
   style?: "primary" | "secondary"
-  buttonOnly?: boolean
   icon?: IconType
 }
 
@@ -17,7 +16,6 @@ const NavigationLink: FC<NavigationProps> = ({
   name,
   active,
   style = "primary",
-  buttonOnly,
   icon: Icon,
 }) => {
   return (
