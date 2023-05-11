@@ -5,6 +5,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
 /**
  * Sticky header for table
  * * set the data-sticky attribute to the table elements you want to make them sticky
+ * @example <table data-sticky></table>
  * @return {void}
  */
 function StickyHeaderTable(): void {
