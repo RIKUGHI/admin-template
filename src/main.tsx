@@ -5,6 +5,8 @@ import { AdminLayout } from "./components/organisms"
 import "./index.css"
 
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"))
+const Data = lazy(() => import("./pages/Data.tsx"))
+const DataCreate = lazy(() => import("./pages/DataCreate.tsx"))
 const Error = lazy(() => import("./pages/Error.tsx"))
 
 ReactDOM.createRoot(document.getElementById("raphael") as HTMLElement).render(
@@ -28,13 +30,34 @@ ReactDOM.createRoot(document.getElementById("raphael") as HTMLElement).render(
             }
           />
           <Route
-            path="/a"
-            element={
-              <Suspense fallback={<h1 className="m-auto block">Loading...</h1>}>
-                a
-              </Suspense>
-            }
-          />
+            path="/data"
+            // element={
+            //   <Suspense fallback={<h1 className="m-auto block">Loading...</h1>}>
+            //     <Data />
+            //   </Suspense>
+            // }
+          >
+            <Route
+              index
+              element={
+                <Suspense
+                  fallback={<h1 className="m-auto block">Loading...</h1>}
+                >
+                  <Data />
+                </Suspense>
+              }
+            />
+            <Route
+              path="create"
+              element={
+                <Suspense
+                  fallback={<h1 className="m-auto block">Loading...</h1>}
+                >
+                  <DataCreate />
+                </Suspense>
+              }
+            />
+          </Route>
           <Route
             path="/b"
             element={

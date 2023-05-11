@@ -15,8 +15,8 @@ const navigations: INavigation[] = [
     active: true,
   },
   {
-    href: "/a",
-    name: "Go to a",
+    href: "/data",
+    name: "Data",
     icon: FaDesktop,
   },
   {

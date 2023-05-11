@@ -1,31 +1,11 @@
-import {
-  FaChevronCircleRight,
-  FaChevronLeft,
-  FaChevronRight,
-  FaFilter,
-  FaInfo,
-  FaPen,
-  FaPlus,
-  FaTimes,
-  FaTrashAlt,
-} from "react-icons/fa"
+import { FaFilter, FaPen, FaPlus, FaTrashAlt } from "react-icons/fa"
 import { Button, Checkbox, Table } from "../components/atoms"
-import { FormSearch, Pagination, Alert } from "../components/molecules"
+import { FormSearch, Pagination } from "../components/molecules"
 import { ManagementLayout } from "../components/organisms"
 
-const Dashboard = () => {
+export default function Data() {
   return (
     <ManagementLayout>
-      <Alert>
-        <p className="text-sm">Data berhasil ditambahkan</p>
-        <Alert.List
-          lists={[
-            "At least 10 characters (and up to 100 characters)",
-            "At least one lowercase character",
-            "Inclusion of at least one special character, e.g., ! @ # ?",
-          ]}
-        />
-      </Alert>
       <div className="space-y-5 rounded-md bg-white p-5 shadow-md">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold">Daftar</h3>
@@ -33,7 +13,7 @@ const Dashboard = () => {
             <Button icon={FaTrashAlt} style="outlined" color="red" disabled />
             <Button icon={FaFilter} style="outlined" name="Filter" />
             <FormSearch />
-            <Button icon={FaPlus} name="Tambah" />
+            <Button icon={FaPlus} name="Tambah" as="a" href="data/create" />
           </div>
         </div>
         <Table sticky>
@@ -44,7 +24,7 @@ const Dashboard = () => {
                   <Checkbox />
                 </div>
               </Table.Head>
-              <Table.Head>Product name</Table.Head>
+              <Table.Head>Product namea</Table.Head>
               <Table.Head>Color</Table.Head>
               <Table.Head>Category</Table.Head>
               <Table.Head>Accesories</Table.Head>
@@ -90,5 +70,3 @@ const Dashboard = () => {
     </ManagementLayout>
   )
 }
-
-export default Dashboard
