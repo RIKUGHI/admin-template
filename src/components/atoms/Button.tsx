@@ -17,7 +17,7 @@ interface Props {
 
 const Button: FC<Props> = ({
   icon: Icon,
-  style = "solid",
+  style,
   color = "primary",
   name,
   disabled,
@@ -52,28 +52,27 @@ const Button: FC<Props> = ({
     <Component
       className={clsx(
         "flex h-9 items-center justify-center rounded-md",
-        style == "solid"
-          ? [
-              "text-white",
-              {
-                "bg-green-600": color == "primary" && !disabled,
-                "bg-blue-600": color == "blue" && !disabled,
-                "bg-red-600": color == "red" && !disabled,
-                "bg-gray-300": disabled,
-              },
-            ]
-          : [
-              "border",
-              {
-                "border-green-600 bg-green-50 text-green-600":
-                  color == "primary" && !disabled,
-                "border-blue-600 bg-blue-50 text-blue-600":
-                  color == "blue" && !disabled,
-                "border-red-600 bg-red-50 text-red-600":
-                  color == "red" && !disabled,
-                "border-gray-300 bg-gray-50 text-gray-300": disabled,
-              },
-            ],
+        style == "solid" && [
+          "text-white",
+          {
+            "bg-green-600": color == "primary" && !disabled,
+            "bg-blue-600": color == "blue" && !disabled,
+            "bg-red-600": color == "red" && !disabled,
+            "bg-gray-300": disabled,
+          },
+        ],
+        style == "outlined" && [
+          "border",
+          {
+            "border-green-600 bg-green-50 text-green-600":
+              color == "primary" && !disabled,
+            "border-blue-600 bg-blue-50 text-blue-600":
+              color == "blue" && !disabled,
+            "border-red-600 bg-red-50 text-red-600":
+              color == "red" && !disabled,
+            "border-gray-300 bg-gray-50 text-gray-300": disabled,
+          },
+        ],
         name ? "px-3" : "w-9"
       )}
     >

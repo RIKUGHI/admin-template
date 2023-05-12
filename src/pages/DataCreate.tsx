@@ -1,128 +1,34 @@
 import { FaChevronRight } from "react-icons/fa"
 import { ManagementLayout } from "../components/organisms"
-import { BreadcrumbLink, Input, TextArea } from "../components/atoms"
+import {
+  BreadcrumbLink,
+  Button,
+  Input,
+  Select,
+  TextArea,
+} from "../components/atoms"
 import { Breadcrumbs, FormInput, FormTextArea } from "../components/molecules"
 import { ChangeEvent, useState } from "react"
+import FormSelect from "../components/molecules/forms/FormSelect"
 
 export default function DataCreate() {
-  const [value, setValue] = useState("")
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value)
-  }
-
   return (
     <ManagementLayout>
       <Breadcrumbs links={["Data", "Create"]} />
       <div className="m-auto max-w-[700px] rounded-md bg-white p-5 shadow-md">
         <form>
-          <div className="space-y-12">
-            <div className="border-b border-gray-900/10 pb-12">
-              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <FormTextArea
-                  name="Test about"
-                  className="col-span-full"
-                  error
-                />
-              </div>
-            </div>
-
-            <div className="border-b border-gray-900/10 pb-12">
-              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <FormInput className="col-span-3" name="First name" error />
-                <FormInput className="col-span-3" name="Last name" />
-
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="country"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Country
-                  </label>
-                  <div className="mt-2">
-                    <select
-                      id="country"
-                      name="country"
-                      autoComplete="country-name"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                    >
-                      <option>United States</option>
-                      <option>Canada</option>
-                      <option>Mexico</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="sm:col-span-2 sm:col-start-1">
-                  <label
-                    htmlFor="city"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    City
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="city"
-                      id="city"
-                      autoComplete="address-level2"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="region"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    State / Province
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="region"
-                      id="region"
-                      autoComplete="address-level1"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="postal-code"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    ZIP / Postal code
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="postal-code"
-                      id="postal-code"
-                      autoComplete="postal-code"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="grid grid-cols-6 gap-2">
+            <FormTextArea name="Test about" className="col-span-3" />
+            <FormTextArea name="Test about" className="col-span-3" error />
+            <FormInput name="Last name" className="col-span-3" />
+            <FormInput name="First name" className="col-span-3" error />
+            <FormSelect name="Options" className="col-span-3" />
+            <FormSelect name="Options" className="col-span-3" error />
           </div>
 
-          <div className="mt-6 flex items-center justify-end gap-x-6">
-            <button
-              type="button"
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Save
-            </button>
+          <div className="mt-2 flex justify-end space-x-2">
+            <Button name="Cancel" color="red" />
+            <Button name="Save" style="solid" color="primary" />
           </div>
         </form>
       </div>

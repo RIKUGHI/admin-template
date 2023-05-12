@@ -13,7 +13,13 @@ export default function Data() {
             <Button icon={FaTrashAlt} style="outlined" color="red" disabled />
             <Button icon={FaFilter} style="outlined" name="Filter" />
             <FormSearch />
-            <Button icon={FaPlus} name="Tambah" as="a" href="data/create" />
+            <Button
+              icon={FaPlus}
+              style="solid"
+              name="Tambah"
+              as="a"
+              href="data/create"
+            />
           </div>
         </div>
         <Table sticky>
