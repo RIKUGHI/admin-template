@@ -1,5 +1,7 @@
 export { default as Button } from "./Button.tsx"
 export { default as Input } from "./Input"
+export { default as TextArea } from "./TextArea.tsx"
+export { default as BaseForm, type CommonBaseFormProps } from "./BaseForm.tsx"
 export {
   default as NavigationLink,
   type NavigationProps,

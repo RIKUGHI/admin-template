@@ -1,13 +1,14 @@
-import { Input } from "../../atoms"
+import { BaseForm, CommonBaseFormProps, Input } from "../../atoms"
 
-const FormInput = () => {
+const FormInput: React.FC<CommonBaseFormProps> = ({
+  className,
+  name,
+  error,
+}) => {
   return (
-    <div className="flex flex-col">
-      <label htmlFor="default-input" className="mb-1 block text-sm">
-        Default input
-      </label>
-      <Input />
-    </div>
+    <BaseForm htmlFor={name} className={className} name={name} error={error}>
+      <Input id={name} error={error} />
+    </BaseForm>
   )
 }
 

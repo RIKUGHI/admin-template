@@ -1,9 +1,16 @@
 import { FaChevronRight } from "react-icons/fa"
 import { ManagementLayout } from "../components/organisms"
-import { BreadcrumbLink, Input } from "../components/atoms"
-import { Breadcrumbs } from "../components/molecules"
+import { BreadcrumbLink, Input, TextArea } from "../components/atoms"
+import { Breadcrumbs, FormInput, FormTextArea } from "../components/molecules"
+import { ChangeEvent, useState } from "react"
 
 export default function DataCreate() {
+  const [value, setValue] = useState("")
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  }
+
   return (
     <ManagementLayout>
       <Breadcrumbs links={["Data", "Create"]} />
@@ -12,42 +19,18 @@ export default function DataCreate() {
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="col-span-full space-y-2">
-                  <label className="block text-sm font-medium leading-6 text-gray-900">
-                    About
-                  </label>
-                  <textarea
-                    rows={3}
-                    className="block w-full rounded-md border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 transition focus:border-blue-500 focus:ring-blue-500"
-                  ></textarea>
-                  <p className="text-sm text-red-600">My version</p>
-                </div>
+                <FormTextArea
+                  name="Test about"
+                  className="col-span-full"
+                  error
+                />
               </div>
             </div>
 
             <div className="border-b border-gray-900/10 pb-12">
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="col-span-3 space-y-2">
-                  <label
-                    htmlFor="first-name"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    First name v
-                  </label>
-                  <Input />
-                  <p className="text-sm text-red-600">My version</p>
-                </div>
-
-                <div className="col-span-3 space-y-2">
-                  <label
-                    htmlFor="last-name"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Last name v
-                  </label>
-                  <Input />
-                  <p className="text-sm text-red-600">My version</p>
-                </div>
+                <FormInput className="col-span-3" name="First name" error />
+                <FormInput className="col-span-3" name="Last name" />
 
                 <div className="sm:col-span-3">
                   <label
