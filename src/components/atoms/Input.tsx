@@ -12,6 +12,7 @@ const Input: FC<Props> = ({ id, style = "standart", error }) => {
     <input
       id={id}
       type="text"
+      autoComplete="off"
       className={clsx(
         "block h-9 w-full rounded-md p-2 text-sm",
         style == "base"
