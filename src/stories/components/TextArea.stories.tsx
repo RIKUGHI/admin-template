@@ -14,7 +14,7 @@ export const Default: Story = {
   args: {},
 }
 
-export const WithError: Story = {
+export const Error: Story = {
   args: {
     error: true,
   },
