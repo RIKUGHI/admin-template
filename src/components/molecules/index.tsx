@@ -1,7 +1,7 @@
 export { default as NestedNavigation } from "./NestedNavigation"
 export { default as FormInput } from "./forms/FormInput"
 export { default as FormTextArea } from "./forms/FormTextArea"
-export { default as FormSearch } from "./forms/FormSearch"
+export { default as FormSearch } from "./FormSearch"
 export { default as Pagination } from "./Pagination"
 export { default as Alert } from "./Alert"
 export { default as Breadcrumbs } from "./Breadcrumbs"

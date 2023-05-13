@@ -1,5 +1,5 @@
 import { FaSearch } from "react-icons/fa"
-import { Input } from "../../atoms"
+import { Input } from "../atoms"
 
 const FormSearch = () => {
   return (
