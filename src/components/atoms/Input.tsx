@@ -20,12 +20,12 @@ const Input: FC<Props> = ({ id, style = "standart", error }) => {
           : [
               "border transition",
               {
-                "border-gray-300 bg-gray-50 focus:border-green-500 focus:ring-green-500":
+                "border-gray-300 focus:border-green-500 focus:ring-green-500":
                   !error,
-                "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500":
-                  error,
+                "border-red-300 focus:border-red-500 focus:ring-red-500": error,
               },
-            ]
+            ],
+        error ? "bg-red-50" : "bg-gray-50"
       )}
     />
   )

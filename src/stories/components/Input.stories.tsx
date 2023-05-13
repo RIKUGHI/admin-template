@@ -5,12 +5,33 @@ const meta: Meta<typeof Input> = {
   title: "Components/Input",
   component: Input,
   tags: ["autodocs"],
-  args: {
-    style: "base",
-  },
 }
 
 export default meta
 type Story = StoryObj<typeof Input>
 
-export const Default: Story = {}
+export const Default: Story = {
+  args: {
+    style: "base",
+  },
+}
+
+export const DefaultError: Story = {
+  args: {
+    style: "base",
+    error: true,
+  },
+}
+
+export const Standart: Story = {
+  args: {
+    style: "standart",
+  },
+}
+
+export const StandartError: Story = {
+  args: {
+    style: "standart",
+    error: true,
+  },
+}
