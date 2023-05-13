@@ -13,6 +13,14 @@ type Story = StoryObj<typeof Button>
 
 export const Default: Story = {
   args: {
+    style: "plain",
+    color: "black",
+    name: "Hello world",
+  },
+}
+
+export const Styled: Story = {
+  args: {
     style: "solid",
     color: "primary",
     name: "Hello world",

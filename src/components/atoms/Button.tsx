@@ -7,8 +7,8 @@ interface Props {
    * React-icons component
    */
   icon?: IconType
-  style?: "solid" | "outlined"
-  color?: "primary" | "blue" | "red"
+  style?: "plain" | "solid" | "outlined"
+  color?: "black" | "primary" | "blue" | "red"
   name?: string
   disabled?: boolean
   href?: string
@@ -17,8 +17,8 @@ interface Props {
 
 const Button: FC<Props> = ({
   icon: Icon,
-  style,
-  color = "primary",
+  style = "plain",
+  color = "black",
   name,
   disabled,
   href,
@@ -58,21 +58,35 @@ const Button: FC<Props> = ({
             "bg-green-600": color == "primary" && !disabled,
             "bg-blue-600": color == "blue" && !disabled,
             "bg-red-600": color == "red" && !disabled,
+            "bg-black": color == "black" && !disabled,
             "bg-gray-300": disabled,
           },
         ],
         style == "outlined" && [
           "border",
           {
-            "border-green-600 bg-green-50 text-green-600":
-              color == "primary" && !disabled,
-            "border-blue-600 bg-blue-50 text-blue-600":
-              color == "blue" && !disabled,
-            "border-red-600 bg-red-50 text-red-600":
-              color == "red" && !disabled,
-            "border-gray-300 bg-gray-50 text-gray-300": disabled,
+            "border-green-600 bg-green-50": color == "primary" && !disabled,
+            "border-blue-600 bg-blue-50": color == "blue" && !disabled,
+            "border-red-600 bg-red-50": color == "red" && !disabled,
+            "border-black bg-black/5": color == "black" && !disabled,
+            "border-gray-300 bg-gray-50": disabled,
           },
         ],
+        {
+          "text-green-600":
+            (style == "plain" || style == "outlined") &&
+            color == "primary" &&
+            !disabled,
+          "text-blue-600":
+            (style == "plain" || style == "outlined") &&
+            color == "blue" &&
+            !disabled,
+          "text-red-600":
+            (style == "plain" || style == "outlined") &&
+            color == "red" &&
+            !disabled,
+          "text-gray-300": disabled,
+        },
         name ? "px-3" : "w-9"
       )}
     >
