@@ -12,7 +12,6 @@ interface Props {
   name?: string
   disabled?: boolean
   href?: string
-  as?: "button" | "a"
 }
 
 const Button: FC<Props> = ({
@@ -22,7 +21,6 @@ const Button: FC<Props> = ({
   name,
   disabled,
   href,
-  as = "button",
 }) => {
   const button: FC<PropsWithChildren<{ className?: string }>> = ({
     children,
@@ -46,7 +44,7 @@ const Button: FC<Props> = ({
     )
   }
 
-  const Component = as == "button" ? button : a
+  const Component = href ? a : button
 
   return (
     <Component
