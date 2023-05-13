@@ -12,4 +12,7 @@ export { default as Checkbox } from "./Checkbox.tsx"
 export { default as Radio } from "./Radio.tsx"
 export { default as PaginationLink } from "./PaginationLink.tsx"
 export { default as AlertList, type AlertListProps } from "./AlertList.tsx"
-export { default as BreadcrumbLink } from "./BreadcrumbLink.tsx"
+export {
+  default as BreadcrumbLink,
+  type BreadcrumbLinkProps,
+} from "./BreadcrumbLink.tsx"
