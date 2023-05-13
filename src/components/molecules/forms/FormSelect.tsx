@@ -2,11 +2,18 @@ import { BaseForm, CommonBaseFormProps, Select } from "../../atoms"
 
 const FormSelect: React.FC<CommonBaseFormProps> = ({
   className,
+  required,
   name,
   error,
 }) => {
   return (
-    <BaseForm htmlFor={name} className={className} name={name} error={error}>
+    <BaseForm
+      required={required}
+      htmlFor={name}
+      className={className}
+      name={name}
+      error={error}
+    >
       <Select id={name} error={error} />
     </BaseForm>
   )

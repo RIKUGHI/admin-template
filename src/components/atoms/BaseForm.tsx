@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { FC, PropsWithChildren } from "react"
 
 export interface CommonBaseFormProps {
+  required?: boolean
   className?: string
   name: string
   error?: boolean
@@ -13,6 +14,7 @@ interface IBaseFormProps extends CommonBaseFormProps {
 
 const BaseForm: FC<PropsWithChildren<IBaseFormProps>> = ({
   children,
+  required,
   className,
   htmlFor,
   name,
@@ -28,6 +30,7 @@ const BaseForm: FC<PropsWithChildren<IBaseFormProps>> = ({
         )}
       >
         {name}
+        {required && <span className="ml-1 text-red-600">*</span>}
       </label>
       {children}
       {error && <p className="text-sm text-red-600">My version</p>}
