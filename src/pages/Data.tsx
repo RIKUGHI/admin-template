@@ -1,6 +1,13 @@
-import { FaFilter, FaPen, FaPlus, FaTrashAlt } from "react-icons/fa"
-import { Button, Checkbox, Table } from "../components/atoms"
-import { FormSearch, Pagination } from "../components/molecules"
+import { FaFilter, FaPen, FaPlus, FaSearch, FaTrashAlt } from "react-icons/fa"
+import {
+  Button,
+  Checkbox,
+  Input,
+  Select,
+  Table,
+  TextArea,
+} from "../components/atoms"
+import { SearchBox, Pagination } from "../components/molecules"
 import { ManagementLayout } from "../components/organisms"
 
 export default function Data() {
@@ -11,11 +18,17 @@ export default function Data() {
           <h3 className="text-lg font-bold">Daftar</h3>
           <div className="flex space-x-2">
             <Button icon={FaTrashAlt} style="outlined" color="red" disabled />
-            <Button icon={FaFilter} style="outlined" name="Filter" />
-            <FormSearch />
+            <Button
+              icon={FaFilter}
+              style="outlined"
+              color="primary"
+              name="Filter"
+            />
+            <SearchBox />
             <Button
               icon={FaPlus}
               style="solid"
+              color="primary"
               name="Tambah"
               as="a"
               href="data/create"

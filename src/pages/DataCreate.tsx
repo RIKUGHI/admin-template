@@ -1,15 +1,23 @@
 import { FaChevronRight } from "react-icons/fa"
 import { ManagementLayout } from "../components/organisms"
 import {
+  BaseForm,
   BreadcrumbLink,
   Button,
+  Checkbox,
   Input,
+  Radio,
   Select,
   TextArea,
 } from "../components/atoms"
-import { Breadcrumbs, FormInput, FormTextArea } from "../components/molecules"
+import {
+  Breadcrumbs,
+  CheckboxWitlLabel,
+  FormInput,
+  FormSelect,
+  FormTextArea,
+} from "../components/molecules"
 import { ChangeEvent, useState } from "react"
-import FormSelect from "../components/molecules/forms/FormSelect"
 
 export default function DataCreate() {
   return (

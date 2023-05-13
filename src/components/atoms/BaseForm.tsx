@@ -5,6 +5,7 @@ export interface CommonBaseFormProps {
   required?: boolean
   className?: string
   name: string
+  helperText?: string
   error?: boolean
 }
 
@@ -18,10 +19,11 @@ const BaseForm: FC<PropsWithChildren<IBaseFormProps>> = ({
   className,
   htmlFor,
   name,
+  helperText,
   error,
 }) => {
   return (
-    <div className={clsx("space-y-2", className && className)}>
+    <div className={clsx("space-y-1", className && className)}>
       <label
         htmlFor={htmlFor}
         className={clsx(
@@ -33,7 +35,12 @@ const BaseForm: FC<PropsWithChildren<IBaseFormProps>> = ({
         {required && <span className="ml-1 text-red-600">*</span>}
       </label>
       {children}
-      {error && <p className="text-sm text-red-600">My version</p>}
+      {(helperText || error) && (
+        <div>
+          {helperText && <p className="text-sm">Helper text</p>}
+          {error && <p className="text-sm text-red-600">My version</p>}
+        </div>
+      )}
     </div>
   )
 }

@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { FormInput, FormTextArea } from "../../components/molecules"
-import FormSelect from "../../components/molecules/forms/FormSelect"
+import {
+  FormCheckbox,
+  FormInput,
+  FormSelect,
+  FormTextArea,
+} from "../../components/molecules"
 
 const Form = () => {
   return <form></form>
@@ -49,6 +53,19 @@ export const Select: Story = {
         <FormSelect name="Options" className="col-span-2" error />
         <FormSelect required name="Options" className="col-span-2" />
         <FormSelect required name="Options" className="col-span-2" error />
+      </div>
+    )
+  },
+}
+
+export const Checkbox: Story = {
+  render: () => {
+    return (
+      <div className="grid grid-cols-4 gap-2">
+        <FormCheckbox name="Options" className="col-span-2" />
+        <FormCheckbox name="Options" className="col-span-2" error />
+        <FormCheckbox required name="Options" className="col-span-2" />
+        <FormCheckbox required name="Options" className="col-span-2" error />
       </div>
     )
   },
