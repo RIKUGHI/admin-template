@@ -12,6 +12,7 @@ interface Props {
   name?: string
   disabled?: boolean
   href?: string
+  onClick?: () => void
 }
 
 const Button: FC<Props> = ({
@@ -21,13 +22,14 @@ const Button: FC<Props> = ({
   name,
   disabled,
   href,
+  onClick,
 }) => {
   const button: FC<PropsWithChildren<{ className?: string }>> = ({
     children,
     className,
   }) => {
     return (
-      <button className={className} disabled={disabled}>
+      <button className={className} disabled={disabled} onClick={onClick}>
         {children}
       </button>
     )

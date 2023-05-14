@@ -1,3 +1,4 @@
+import { DialogHTMLAttributes, useRef } from "react"
 import {
   Button,
   InputFloatingLabel,
@@ -12,6 +13,26 @@ import {
 import { ManagementLayout } from "../components/organisms"
 
 export default function DataCreate() {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
+  function handleDialog() {
+    dialogRef.current?.showModal()
+  }
+
+  function outside(e) {
+    if (dialogRef.current) {
+      const dialogDimensions = dialogRef.current.getBoundingClientRect()
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        dialogRef.current.close()
+      }
+    }
+  }
+
   return (
     <ManagementLayout>
       <Breadcrumb>
@@ -37,6 +58,19 @@ export default function DataCreate() {
             <Button name="Save" style="solid" color="primary" />
           </div>
         </form>
+        <Button
+          name="Open modal"
+          style="solid"
+          color="blue"
+          onClick={handleDialog}
+        />
+        <dialog
+          ref={dialogRef}
+          className="z-10 rounded-md bg-white p-2 backdrop:bg-black/50"
+          onClick={outside}
+        >
+          Test modal
+        </dialog>
       </div>
     </ManagementLayout>
   )
