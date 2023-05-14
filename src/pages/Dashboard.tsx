@@ -10,7 +10,7 @@ import {
   FaTrashAlt,
 } from "react-icons/fa"
 import { Button, Checkbox, Table } from "../components/atoms"
-import { FormSearch, Pagination, Alert } from "../components/molecules"
+import { SearchBox, Pagination, Alert } from "../components/molecules"
 import { ManagementLayout } from "../components/organisms"
 
 const Dashboard = () => {
@@ -32,7 +32,7 @@ const Dashboard = () => {
           <div className="flex space-x-2">
             <Button icon={FaTrashAlt} style="outlined" color="red" disabled />
             <Button icon={FaFilter} style="outlined" name="Filter" />
-            <FormSearch />
+            <SearchBox />
             <Button icon={FaPlus} name="Tambah" />
           </div>
         </div>

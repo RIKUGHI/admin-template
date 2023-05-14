@@ -30,7 +30,6 @@ export default function Data() {
               style="solid"
               color="primary"
               name="Tambah"
-              as="a"
               href="data/create"
             />
           </div>
