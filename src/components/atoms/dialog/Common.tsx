@@ -1,14 +1,27 @@
 import { FC, PropsWithChildren } from "react"
+import { FaTimes } from "react-icons/fa"
 
-const Common: FC<PropsWithChildren<{ dialog: string }>> = ({
+export interface DialogProps {
+  style: string
+  onHide: () => void
+}
+
+const Common: FC<PropsWithChildren<DialogProps>> = ({
   children,
-  dialog,
+  style,
+  onHide,
 }) => {
   return (
     <div className="flex justify-center px-4">
       <div
-        className={`${dialog} w-[700px] rounded-md bg-white p-6 shadow-md transition-all duration-300`}
+        className={`${style} w-[700px] rounded-md bg-white p-6 shadow-md transition-all duration-300`}
       >
+        <div className="flex items-center justify-between">
+          <span className="text-xl font-bold text-green-600">Title</span>
+          <button className="bg-white" onClick={onHide}>
+            <FaTimes className="text-lg text-gray-600" />
+          </button>
+        </div>
         {children}
       </div>
     </div>

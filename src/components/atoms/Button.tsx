@@ -29,7 +29,12 @@ const Button: FC<Props> = ({
     className,
   }) => {
     return (
-      <button className={className} disabled={disabled} onClick={onClick}>
+      <button
+        type="button"
+        className={className}
+        disabled={disabled}
+        onClick={onClick}
+      >
         {children}
       </button>
     )
