@@ -1,16 +1,12 @@
-import clsx from "clsx"
 import {
   FC,
+  MouseEvent,
   PropsWithChildren,
   useEffect,
   useRef,
   useState,
-  MouseEvent,
 } from "react"
 import { Centered, Common } from "../atoms/dialog"
-import { FaTimes } from "react-icons/fa"
-import { FormInput, FormSelect, FormTextArea } from "."
-import { Button } from "../atoms"
 
 interface Props {
   title: string

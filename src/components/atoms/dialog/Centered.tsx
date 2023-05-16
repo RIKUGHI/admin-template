@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, forwardRef } from "react"
+import { PropsWithChildren, forwardRef } from "react"
 import { DialogProps } from "."
 
 const Centered = forwardRef<HTMLDivElement, PropsWithChildren<DialogProps>>(
