@@ -9,25 +9,26 @@ interface Option {
 }
 
 const data: Option[] = [
-  { value: "ocean", label: "Ocean" },
-  { value: "blue", label: "Blue" },
-  { value: "purple", label: "Purple", isDisabled: true },
+  { value: "ocean", label: "1 Ocean" },
+  { value: "blue", label: "2 Blue" },
+  { value: "purple", label: "3 Purple", isDisabled: true },
   {
     value: "red",
-    label: "Red",
+    label: "4 Red",
   },
-  { value: "orange", label: "Orange" },
+  { value: "orange", label: "5 Orange" },
   {
     value: "yellow",
-    label: "Yellow",
+    label: "6 Yellow",
   },
-  { value: "green", label: "Green" },
-  { value: "forest", label: "Forest" },
-  { value: "slate", label: "Slate" },
-  { value: "silver", label: "Silver" },
+  { value: "green", label: "7 Green" },
+  { value: "forest", label: "8 Forest" },
+  { value: "slate", label: "9 Slate" },
+  { value: "silver", label: "10 Silver" },
 ]
 
 let currentFocus = 0
+let currentEvent: "mouse" | "keyboard" | undefined
 
 const Select2 = () => {
   const displayBoxRef = useRef<HTMLDivElement>(null)
@@ -83,6 +84,7 @@ const Select2 = () => {
   function handleKeyboard(e: globalThis.KeyboardEvent) {
     if (!optionContainerRef.current) return
 
+    if (currentEvent != "keyboard") currentEvent = "keyboard"
     if (e.key == "ArrowDown") currentFocus++
     if (e.key == "ArrowUp") currentFocus--
 
@@ -94,8 +96,15 @@ const Select2 = () => {
   }
 
   function handleMouseOver(i: number) {
-    // TODO should fix "add semi active" glitched based on stopped cursor while typing
-    if (!data[i].isDisabled) {
+    if (currentEvent == "mouse" && !data[i].isDisabled) {
+      currentFocus = i
+      addSemiActive()
+    }
+  }
+
+  function handleMouseMove(i: number) {
+    if (currentEvent != "mouse") {
+      currentEvent = "mouse"
       currentFocus = i
       addSemiActive()
     }
@@ -184,6 +193,7 @@ const Select2 = () => {
                 )}
                 onClick={!data.isDisabled ? () => handleSelected(i) : undefined}
                 onMouseOver={() => handleMouseOver(i)}
+                onMouseMove={() => handleMouseMove(i)}
               >
                 <span
                   className={clsx(
