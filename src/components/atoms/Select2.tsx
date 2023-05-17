@@ -32,7 +32,7 @@ let currentFocus = 0
 const Select2 = () => {
   const displayBoxRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const contentContainerRef = useRef<HTMLDivElement>(null)
+  const optionContainerRef = useRef<HTMLDivElement>(null)
 
   const [active, setActive] = useState(false)
   const [selected, setSelected] = useState<number | null>(null)
@@ -57,10 +57,10 @@ const Select2 = () => {
   }
 
   function handleOutside(e: globalThis.MouseEvent) {
-    if (displayBoxRef.current && contentContainerRef.current) {
+    if (displayBoxRef.current && optionContainerRef.current) {
       const refDimensions = displayBoxRef.current.getBoundingClientRect()
       const contentRefDimensions =
-        contentContainerRef.current.getBoundingClientRect()
+        optionContainerRef.current.getBoundingClientRect()
 
       if (
         e.clientX < refDimensions.left ||
@@ -81,7 +81,7 @@ const Select2 = () => {
   }
 
   function handleKeyboard(e: globalThis.KeyboardEvent) {
-    if (!contentContainerRef.current) return
+    if (!optionContainerRef.current) return
 
     if (e.key == "ArrowDown") currentFocus++
     if (e.key == "ArrowUp") currentFocus--
@@ -90,7 +90,7 @@ const Select2 = () => {
     handleScrolling()
 
     if (e.key == "Enter" && !data[currentFocus].isDisabled)
-      contentContainerRef.current.querySelectorAll("li")[currentFocus].click()
+      optionContainerRef.current.querySelectorAll("li")[currentFocus].click()
   }
 
   function handleMouseOver(i: number) {
@@ -102,9 +102,9 @@ const Select2 = () => {
   }
 
   function addSemiActive() {
-    if (!contentContainerRef.current) return
+    if (!optionContainerRef.current) return
 
-    const li = contentContainerRef.current.querySelectorAll("li")
+    const li = optionContainerRef.current.querySelectorAll("li")
 
     li.forEach((l) => l.classList.remove("bg-green-100"))
     if (currentFocus >= li.length) currentFocus = 0
@@ -113,33 +113,33 @@ const Select2 = () => {
   }
 
   function handleScrolling() {
-    if (!contentContainerRef.current) return
+    if (!optionContainerRef.current) return
 
-    const li = contentContainerRef.current.querySelectorAll("li")
+    const li = optionContainerRef.current.querySelectorAll("li")
 
     // these conditions can be disabled and still work perfectly
-    if (currentFocus == 0) contentContainerRef.current.scrollTop = 0
+    if (currentFocus == 0) optionContainerRef.current.scrollTop = 0
     if (currentFocus == li.length - 1)
-      contentContainerRef.current.scrollTop =
-        contentContainerRef.current.scrollHeight
+      optionContainerRef.current.scrollTop =
+        optionContainerRef.current.scrollHeight
 
-    const contentContainerDimensions =
-      contentContainerRef.current.getBoundingClientRect()
-    const currentFocusLiDimensions = li[currentFocus].getBoundingClientRect()
+    const optionContainerDimensions =
+      optionContainerRef.current.getBoundingClientRect()
+    const currentFocusDimensions = li[currentFocus].getBoundingClientRect()
 
-    // do a scroll to the li hiding above the contentContainerDimensions - ArrowUp
-    if (currentFocusLiDimensions.top <= contentContainerDimensions.top) {
-      contentContainerRef.current.scrollBy(
+    // do a scroll to the li hiding above the optionContainerDimensions - ArrowUp
+    if (currentFocusDimensions.top <= optionContainerDimensions.top) {
+      optionContainerRef.current.scrollBy(
         0,
-        currentFocusLiDimensions.top - contentContainerDimensions.top - 5
+        currentFocusDimensions.top - optionContainerDimensions.top - 5
       )
     }
 
-    // do a scroll to the li hiding under the contentContainerDimensions ArrowDown
-    if (currentFocusLiDimensions.bottom >= contentContainerDimensions.bottom) {
-      contentContainerRef.current.scrollBy(
+    // do a scroll to the li hiding under the optionContainerDimensions ArrowDown
+    if (currentFocusDimensions.bottom >= optionContainerDimensions.bottom) {
+      optionContainerRef.current.scrollBy(
         0,
-        currentFocusLiDimensions.bottom - contentContainerDimensions.bottom + 5
+        currentFocusDimensions.bottom - optionContainerDimensions.bottom + 5
       )
     }
   }
@@ -171,7 +171,7 @@ const Select2 = () => {
       </div>
       {active && (
         <div
-          ref={contentContainerRef}
+          ref={optionContainerRef}
           className="scrollbar absolute inset-x-0 top-11 z-10 max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1"
         >
           <ul>
