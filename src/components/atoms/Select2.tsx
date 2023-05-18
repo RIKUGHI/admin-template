@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { useEffect, useRef, useState } from "react"
-import { IoChevronDown } from "react-icons/io5"
+import { IoChevronDown, IoClose } from "react-icons/io5"
 
 interface Option {
   readonly value: string
@@ -189,9 +189,25 @@ const Select2 = () => {
           onFocus={handleFocus}
           onBlur={handleBlur}
         />
-        <button className="pointer-events-none outline-none">
-          <IoChevronDown className="text-lg" />
-        </button>
+        <div className="flex space-x-2">
+          <button
+            className={clsx(
+              "cursor-context-menu outline-none transition",
+              activeDisplayBox ? "text-gray-600" : "text-gray-400"
+            )}
+          >
+            <IoClose className="text-lg" />
+          </button>
+          <span className="w-0.5 bg-gray-400"></span>
+          <button
+            className={clsx(
+              "cursor-context-menu outline-none transition",
+              activeDisplayBox ? "text-gray-600" : "text-gray-400"
+            )}
+          >
+            <IoChevronDown className="text-lg" />
+          </button>
+        </div>
       </div>
       {openOptionContainer && (
         <div
