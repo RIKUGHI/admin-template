@@ -1,6 +1,6 @@
 import clsx from "clsx"
+import { useEffect, useRef, useState } from "react"
 import { IoChevronDown } from "react-icons/io5"
-import { useState, useRef, useEffect } from "react"
 
 interface Option {
   readonly value: string
@@ -35,53 +35,62 @@ const Select2 = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const optionContainerRef = useRef<HTMLDivElement>(null)
 
-  const [active, setActive] = useState(false)
+  const [activeDisplayBox, setActiveDisplayBox] = useState(false)
+  const [openOptionContainer, setOpenOptionContainer] = useState(false)
   const [selected, setSelected] = useState<number | null>(null)
 
   useEffect(() => {
     console.log("rendered select")
-    if (active) {
+    if (activeDisplayBox) {
+      // Adjust the current focus
+      currentFocus = typeof selected == "number" ? selected : 0
+
       addSemiActive()
       handleScrolling()
+
+      window.onmousedown = (e) => {
+        const isClickedInsideDisplayBox = displayBoxRef.current?.contains(
+          e.target as Node
+        )
+        if (isClickedInsideDisplayBox) e.preventDefault()
+      }
+      window.onkeydown = handleKeyboard
+    } else {
+      window.onmousedown = null
+      window.onkeydown = null
     }
-  }, [active])
+  }, [activeDisplayBox, openOptionContainer])
 
-  function handleToggleActive() {
-    setActive(!active)
-    inputRef.current?.focus()
-
-    // reset currentFocus
-    currentFocus = typeof selected == "number" ? selected : 0
-
-    window.onclick = !active ? handleOutside : null
-    window.onkeydown = !active ? handleKeyboard : null
+  function handleFocus() {
+    setActiveDisplayBox(true)
   }
 
-  function handleOutside(e: globalThis.MouseEvent) {
-    if (displayBoxRef.current && optionContainerRef.current) {
-      const refDimensions = displayBoxRef.current.getBoundingClientRect()
-      const contentRefDimensions =
-        optionContainerRef.current.getBoundingClientRect()
-
-      if (
-        e.clientX < refDimensions.left ||
-        e.clientX > refDimensions.right ||
-        e.clientY < refDimensions.top ||
-        e.clientY > contentRefDimensions.bottom
-      ) {
-        setActive(false)
-        window.onclick = null
-        window.onkeydown = null
-      }
+  function handleBlur() {
+    if (currentEvent != "mouse") {
+      setOpenOptionContainer(false)
+      setActiveDisplayBox(false)
     }
+  }
+
+  function handleMouseLeave() {
+    currentEvent = undefined
+  }
+
+  function handleToggleActive() {
+    inputRef.current?.focus()
+    setOpenOptionContainer(!openOptionContainer)
   }
 
   function handleSelected(index: number) {
     setSelected(index)
-    setActive(false)
+    setOpenOptionContainer(false)
+    setActiveDisplayBox(false)
+    inputRef.current?.blur()
   }
 
   function handleKeyboard(e: globalThis.KeyboardEvent) {
+    // open openOptionContainer during activeDisplayBox is true but openOptionContainer is false
+    if (!openOptionContainer) setOpenOptionContainer(true)
     if (!optionContainerRef.current) return
 
     if (currentEvent != "keyboard") currentEvent = "keyboard"
@@ -136,7 +145,7 @@ const Select2 = () => {
       optionContainerRef.current.getBoundingClientRect()
     const currentFocusDimensions = li[currentFocus].getBoundingClientRect()
 
-    // do a scroll to the li hiding above the optionContainerDimensions - ArrowUp
+    // do a scroll to the li/option hiding above the optionContainerDimensions - ArrowUp
     if (currentFocusDimensions.top <= optionContainerDimensions.top) {
       optionContainerRef.current.scrollBy(
         0,
@@ -144,7 +153,7 @@ const Select2 = () => {
       )
     }
 
-    // do a scroll to the li hiding under the optionContainerDimensions ArrowDown
+    // do a scroll to the li/option hiding under the optionContainerDimensions ArrowDown
     if (currentFocusDimensions.bottom >= optionContainerDimensions.bottom) {
       optionContainerRef.current.scrollBy(
         0,
@@ -159,7 +168,7 @@ const Select2 = () => {
         ref={displayBoxRef}
         className={clsx(
           "flex h-9 items-center justify-between rounded-md border bg-gray-50 p-2 ring-1 transition",
-          active
+          activeDisplayBox
             ? "border-green-500 ring-green-500"
             : "border-gray-300 ring-transparent"
         )}
@@ -167,21 +176,28 @@ const Select2 = () => {
       >
         <span
           className={clsx(
-            "pointer-events-none line-clamp-1 text-sm",
+            "line-clamp-1 text-sm",
             selected == null && "text-gray-500"
           )}
         >
           {typeof selected == "number" ? data[selected].label : "Select..."}
         </span>
-        <input ref={inputRef} type="text" className="sr-only h-9" />
+        <input
+          ref={inputRef}
+          type="text"
+          className="sr-onlyx h-9"
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
         <button className="pointer-events-none outline-none">
           <IoChevronDown className="text-lg" />
         </button>
       </div>
-      {active && (
+      {openOptionContainer && (
         <div
           ref={optionContainerRef}
-          className="scrollbar absolute inset-x-0 top-11 z-10 max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1"
+          className="scrollbar absolute inset-x-0 top-11 z-10 max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1 shadow-md"
+          onMouseLeave={handleMouseLeave}
         >
           <ul>
             {data.map((data, i) => (
