@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useEffect, useRef, useState } from "react"
+import { MouseEvent, useEffect, useRef, useState } from "react"
 import { IoChevronDown, IoClose } from "react-icons/io5"
 
 interface Option {
@@ -29,6 +29,7 @@ const data: Option[] = [
 
 let currentFocus = 0
 let currentEvent: "mouse" | "keyboard" | undefined
+let hasCleaned: boolean | undefined
 
 const Select2 = () => {
   const displayBoxRef = useRef<HTMLDivElement>(null)
@@ -40,10 +41,12 @@ const Select2 = () => {
   const [selected, setSelected] = useState<number | null>(null)
 
   useEffect(() => {
-    console.log("rendered select")
+    console.log("rendered select", activeDisplayBox)
     if (activeDisplayBox) {
       // Adjust the current focus
-      currentFocus = typeof selected == "number" ? selected : 0
+      currentFocus =
+        typeof selected == "number" ? selected : hasCleaned ? currentFocus : 0
+      if (hasCleaned) hasCleaned = undefined
 
       addSemiActive()
       handleScrolling()
@@ -59,7 +62,7 @@ const Select2 = () => {
       window.onmousedown = null
       window.onkeydown = null
     }
-  }, [activeDisplayBox, openOptionContainer])
+  }, [activeDisplayBox, openOptionContainer, selected])
 
   function handleFocus() {
     setActiveDisplayBox(true)
@@ -162,6 +165,13 @@ const Select2 = () => {
     }
   }
 
+  function doClear(e: MouseEvent) {
+    e.stopPropagation()
+    setSelected(null)
+    hasCleaned = true
+    if (!openOptionContainer) currentFocus = 0
+  }
+
   return (
     <div className="relative mb-10">
       <div
@@ -173,6 +183,7 @@ const Select2 = () => {
             : "border-gray-300 ring-transparent"
         )}
         onClick={handleToggleActive}
+        onMouseLeave={handleMouseLeave}
       >
         <span
           className={clsx(
@@ -190,19 +201,26 @@ const Select2 = () => {
           onBlur={handleBlur}
         />
         <div className="flex space-x-2">
-          <button
-            className={clsx(
-              "cursor-context-menu outline-none transition",
-              activeDisplayBox ? "text-gray-600" : "text-gray-400"
-            )}
-          >
-            <IoClose className="text-lg" />
-          </button>
+          {typeof selected == "number" && (
+            <button
+              className={clsx(
+                "cursor-context-menu outline-none transition",
+                activeDisplayBox
+                  ? "text-gray-600"
+                  : "text-gray-400 hover:text-gray-600"
+              )}
+              onClick={doClear}
+            >
+              <IoClose className="text-lg" />
+            </button>
+          )}
           <span className="w-0.5 bg-gray-400"></span>
           <button
             className={clsx(
               "cursor-context-menu outline-none transition",
-              activeDisplayBox ? "text-gray-600" : "text-gray-400"
+              activeDisplayBox
+                ? "text-gray-600"
+                : "text-gray-400 hover:text-gray-600"
             )}
           >
             <IoChevronDown className="text-lg" />
