@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { MouseEvent, useEffect, useRef, useState } from "react"
+import { FC, MouseEvent, useEffect, useRef, useState } from "react"
 import { IoChevronDown, IoClose } from "react-icons/io5"
 
 interface Option {
@@ -31,7 +31,11 @@ let currentFocus = 0
 let currentEvent: "mouse" | "keyboard" | undefined
 let hasCleaned: boolean | undefined
 
-const Select2 = () => {
+interface SelectProps {
+  clearable?: boolean
+}
+
+const Select2: FC<SelectProps> = ({ clearable }) => {
   const displayBoxRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const optionContainerRef = useRef<HTMLDivElement>(null)
@@ -46,7 +50,7 @@ const Select2 = () => {
       // Adjust the current focus
       currentFocus =
         typeof selected == "number" ? selected : hasCleaned ? currentFocus : 0
-      if (hasCleaned) hasCleaned = undefined
+      hasCleaned = undefined
 
       addSemiActive()
       handleScrolling()
@@ -201,7 +205,7 @@ const Select2 = () => {
           onBlur={handleBlur}
         />
         <div className="flex space-x-2">
-          {typeof selected == "number" && (
+          {typeof selected == "number" && clearable && (
             <button
               className={clsx(
                 "cursor-context-menu outline-none transition",
