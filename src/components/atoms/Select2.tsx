@@ -1,5 +1,15 @@
 import clsx from "clsx"
-import { FC, MouseEvent, useEffect, useRef, useState } from "react"
+import {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  KeyboardEvent,
+  MouseEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import { IoChevronDown, IoClose } from "react-icons/io5"
 
 interface Option {
@@ -8,7 +18,7 @@ interface Option {
   readonly isDisabled?: boolean
 }
 
-const data: Option[] = [
+const options: Option[] = [
   { value: "ocean", label: "1 Ocean" },
   { value: "blue", label: "2 Blue" },
   { value: "purple", label: "3 Purple", isDisabled: true },
@@ -27,15 +37,21 @@ const data: Option[] = [
   { value: "silver", label: "10 Silver" },
 ]
 
+/**
+ * Why these variable placed outside of component
+ * because these will be reset when component get re-rendered
+ */
 let currentFocus = 0
 let currentEvent: "mouse" | "keyboard" | undefined
 let hasCleaned: boolean | undefined
+let isSearching = false
 
 interface SelectProps {
   clearable?: boolean
+  searchable?: boolean
 }
 
-const Select2: FC<SelectProps> = ({ clearable }) => {
+const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
   const displayBoxRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const optionContainerRef = useRef<HTMLDivElement>(null)
@@ -43,30 +59,44 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
   const [activeDisplayBox, setActiveDisplayBox] = useState(false)
   const [openOptionContainer, setOpenOptionContainer] = useState(false)
   const [selected, setSelected] = useState<number | null>(null)
+  const [query, setQuery] = useState("")
+
+  const filteredData: Option[] = useMemo(() => {
+    return options.filter((option) => {
+      return option.label.toLowerCase().includes(query)
+    })
+  }, [query])
+
+  const currentOptions: Option[] = searchable ? filteredData : options
 
   useEffect(() => {
-    console.log("rendered select", activeDisplayBox)
+    console.log("rendered select")
     if (activeDisplayBox) {
       // Adjust the current focus
       currentFocus =
         typeof selected == "number" ? selected : hasCleaned ? currentFocus : 0
       hasCleaned = undefined
 
-      addSemiActive()
-      handleScrolling()
+      if (currentOptions.length > 0) {
+        addSemiActive()
+        handleScrolling()
+      }
 
       window.onmousedown = (e) => {
         const isClickedInsideDisplayBox = displayBoxRef.current?.contains(
           e.target as Node
         )
-        if (isClickedInsideDisplayBox) e.preventDefault()
+
+        // prevent an input from losing focus and still get select event
+        if (isClickedInsideDisplayBox && e.target != inputRef.current)
+          e.preventDefault()
       }
-      window.onkeydown = handleKeyboard
+      window.onkeydown = currentOptions.length > 0 ? handleKeyboard : null
     } else {
       window.onmousedown = null
       window.onkeydown = null
     }
-  }, [activeDisplayBox, openOptionContainer, selected])
+  }, [activeDisplayBox, openOptionContainer, selected, query])
 
   function handleFocus() {
     setActiveDisplayBox(true)
@@ -89,6 +119,13 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
   }
 
   function handleSelected(index: number) {
+    if (searchable) {
+      index = options.findIndex(
+        (option) => option.value == currentOptions[index].value
+      )
+      setQuery("")
+    }
+
     setSelected(index)
     setOpenOptionContainer(false)
     setActiveDisplayBox(false)
@@ -97,6 +134,7 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
 
   function handleKeyboard(e: globalThis.KeyboardEvent) {
     // open openOptionContainer during activeDisplayBox is true but openOptionContainer is false
+    // TODO activeDisplayBox is true but openOptionContainer is false when backspace pressed, i want openOptionContainer still false
     if (!openOptionContainer) setOpenOptionContainer(true)
     if (!optionContainerRef.current) return
 
@@ -107,12 +145,12 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
     addSemiActive()
     handleScrolling()
 
-    if (e.key == "Enter" && !data[currentFocus].isDisabled)
+    if (e.key == "Enter")
       optionContainerRef.current.querySelectorAll("li")[currentFocus].click()
   }
 
   function handleMouseOver(i: number) {
-    if (currentEvent == "mouse" && !data[i].isDisabled) {
+    if (currentEvent == "mouse" && !currentOptions[i].isDisabled) {
       currentFocus = i
       addSemiActive()
     }
@@ -173,7 +211,20 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
     e.stopPropagation()
     setSelected(null)
     hasCleaned = true
-    if (!openOptionContainer) currentFocus = 0
+  }
+
+  function handleSearch(e: ChangeEvent<HTMLInputElement>) {
+    isSearching = true
+    setQuery(e.target.value.trimStart())
+  }
+
+  function doClear2(e: KeyboardEvent) {
+    if (e.key == "Backspace" && !isSearching) {
+      setSelected(null)
+      hasCleaned = true
+    } else {
+      isSearching = false
+    }
   }
 
   return (
@@ -181,7 +232,7 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
       <div
         ref={displayBoxRef}
         className={clsx(
-          "flex h-9 items-center justify-between rounded-md border bg-gray-50 p-2 ring-1 transition",
+          "flex h-9 justify-between rounded-md border bg-gray-50 p-2 ring-1 transition",
           activeDisplayBox
             ? "border-green-500 ring-green-500"
             : "border-gray-300 ring-transparent"
@@ -189,21 +240,34 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
         onClick={handleToggleActive}
         onMouseLeave={handleMouseLeave}
       >
-        <span
-          className={clsx(
-            "line-clamp-1 text-sm",
-            selected == null && "text-gray-500"
+        <div className="relative flex flex-1 items-center">
+          {!query && (
+            <span
+              className={clsx(
+                "line-clamp-1 text-sm",
+                selected == null && "text-gray-500"
+              )}
+            >
+              {typeof selected == "number"
+                ? currentOptions[selected].label
+                : "Select..."}
+            </span>
           )}
-        >
-          {typeof selected == "number" ? data[selected].label : "Select..."}
-        </span>
-        <input
-          ref={inputRef}
-          type="text"
-          className="sr-onlyx h-9"
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-        />
+          <input
+            ref={inputRef}
+            type="text"
+            className={clsx(
+              "sr-onlyx h-9 border-none bg-transparent p-0 text-sm focus:ring-transparent",
+              searchable && "absolute left-0 right-0"
+            )}
+            value={query}
+            onKeyUp={searchable ? doClear2 : undefined}
+            onKeyDown={searchable ? undefined : (e) => e.preventDefault()}
+            onChange={handleSearch}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+        </div>
         <div className="flex space-x-2">
           {typeof selected == "number" && clearable && (
             <button
@@ -238,14 +302,21 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
           onMouseLeave={handleMouseLeave}
         >
           <ul>
-            {data.map((data, i) => (
+            {currentOptions.length == 0 && (
+              <li className="p-2 text-center text-gray-400">No options</li>
+            )}
+            {currentOptions.map((currentOption, i) => (
               <li
                 key={i}
                 className={clsx(
                   "flex items-center p-2",
                   i == selected && "bg-green-600"
                 )}
-                onClick={!data.isDisabled ? () => handleSelected(i) : undefined}
+                onClick={
+                  !currentOption.isDisabled
+                    ? () => handleSelected(i)
+                    : undefined
+                }
                 onMouseOver={() => handleMouseOver(i)}
                 onMouseMove={() => handleMouseMove(i)}
               >
@@ -253,10 +324,10 @@ const Select2: FC<SelectProps> = ({ clearable }) => {
                   className={clsx(
                     "pointer-events-none text-sm",
                     i == selected && "text-white",
-                    data.isDisabled && "text-gray-300"
+                    currentOption.isDisabled && "text-gray-300"
                   )}
                 >
-                  {data.label}
+                  {currentOption.label}
                 </span>
               </li>
             ))}
