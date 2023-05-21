@@ -47,11 +47,12 @@ let hasCleaned: boolean | undefined
 let isSearching = false
 
 interface SelectProps {
-  clearable?: boolean
-  searchable?: boolean
+  isClearable?: boolean
+  isSearchable?: boolean
+  isMulti?: boolean
 }
 
-const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
+const Select2: FC<SelectProps> = ({ isClearable, isSearchable }) => {
   const displayBoxRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const optionContainerRef = useRef<HTMLDivElement>(null)
@@ -67,7 +68,9 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
     })
   }, [query])
 
-  const currentOptions: readonly Option[] = searchable ? filteredData : options
+  const currentOptions: readonly Option[] = isSearchable
+    ? filteredData
+    : options
 
   useEffect(() => {
     // console.log("rendered select")
@@ -78,7 +81,7 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
       hasCleaned = undefined
 
       // adjust the original currentFocus of currentOptions during filtering
-      if (searchable && typeof selected == "number") {
+      if (isSearchable && typeof selected == "number") {
         const oriCurrentFocus = currentOptions.findIndex(
           (currentOption) => currentOption.value == options[selected].value
         )
@@ -132,7 +135,7 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
   }
 
   function handleSelected(index: number) {
-    if (searchable) {
+    if (isSearchable) {
       // adjust the original index of options during filtering
       index = options.findIndex(
         (option) => option.value == currentOptions[index].value
@@ -156,8 +159,8 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
       "F5",
     ]
 
-    // prevent keyboard from not allowed keys during !searchable
-    if (!searchable && !allowedKeys.includes(e.key)) e.preventDefault()
+    // prevent keyboard from not allowed keys during !isSearchable
+    if (!isSearchable && !allowedKeys.includes(e.key)) e.preventDefault()
 
     if (!openOptionContainer) setOpenOptionContainer(true)
     if (!optionContainerRef.current) return
@@ -250,7 +253,7 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
   }
 
   function getOriginalSelected(index: number) {
-    return searchable && typeof selected == "number"
+    return isSearchable && typeof selected == "number"
       ? options[selected].value == currentOptions[index].value
       : index == selected
   }
@@ -286,7 +289,7 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
             type="text"
             className={clsx(
               "sr-onlyx h-9 border-none bg-transparent p-0 text-sm focus:ring-transparent",
-              searchable && "absolute left-0 right-0"
+              isSearchable && "absolute left-0 right-0"
             )}
             value={query}
             onKeyUp={handleKeyboardPressedUp}
@@ -299,7 +302,7 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
           />
         </div>
         <div className="flex space-x-2">
-          {typeof selected == "number" && clearable && (
+          {typeof selected == "number" && isClearable && (
             <button
               className={clsx(
                 "cursor-context-menu outline-none transition",
