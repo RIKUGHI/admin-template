@@ -2,7 +2,6 @@ import clsx from "clsx"
 import {
   ChangeEvent,
   FC,
-  FormEvent,
   KeyboardEvent,
   MouseEvent,
   useEffect,
@@ -52,7 +51,7 @@ interface SelectProps {
   isMulti?: boolean
 }
 
-const Select2: FC<SelectProps> = ({ isClearable, isSearchable }) => {
+const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
   const displayBoxRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const optionContainerRef = useRef<HTMLDivElement>(null)
@@ -263,32 +262,40 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable }) => {
       <div
         ref={displayBoxRef}
         className={clsx(
-          "flex h-9 justify-between rounded-md border bg-gray-50 p-2 ring-1 transition",
+          "flex min-h-[36px] justify-between rounded-md border bg-gray-50 px-2 ring-1 transition",
           activeDisplayBox
             ? "border-green-500 ring-green-500"
-            : "border-gray-300 ring-transparent"
+            : "border-gray-300 ring-transparent",
+          !isMulti && "h-9"
         )}
         onClick={handleToggleActive}
         onMouseLeave={handleMouseLeave}
       >
         <div className="relative flex flex-1 items-center">
-          {!query && (
-            <span
-              className={clsx(
-                "line-clamp-1 text-sm",
-                selected == null && "text-gray-500"
-              )}
-            >
-              {typeof selected == "number"
-                ? currentOptions[selected].label
-                : "Select..."}
-            </span>
+          {isMulti ? (
+            <div className="bb flex flex-wrap text-sm">
+              <div className="m-0.5 rounded bg-gray-300 px-1">Tag 1</div>
+              <div className="m-0.5 rounded bg-gray-300 px-1">Tag 1</div>
+            </div>
+          ) : (
+            !query && (
+              <span
+                className={clsx(
+                  "line-clamp-1 text-sm",
+                  selected == null && "text-gray-500"
+                )}
+              >
+                {typeof selected == "number"
+                  ? currentOptions[selected].label
+                  : "Select..."}
+              </span>
+            )
           )}
           <input
             ref={inputRef}
             type="text"
             className={clsx(
-              "sr-onlyx h-9 border-none bg-transparent p-0 text-sm focus:ring-transparent",
+              "sr-onlyx h-9 bg-transparent p-0 text-sm focus:ring-transparent",
               isSearchable && "absolute left-0 right-0"
             )}
             value={query}
@@ -315,7 +322,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable }) => {
               <IoClose className="text-lg" />
             </button>
           )}
-          <span className="w-0.5 bg-gray-400"></span>
+          <span className="my-2 w-0.5 bg-gray-400"></span>
           <button
             className={clsx(
               "cursor-context-menu outline-none transition",
