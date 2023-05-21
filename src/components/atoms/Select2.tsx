@@ -18,10 +18,10 @@ interface Option {
   readonly isDisabled?: boolean
 }
 
-const options: Option[] = [
+const options: readonly Option[] = [
   { value: "ocean", label: "1 Ocean" },
-  { value: "blue", label: "2 Blue" },
-  { value: "purple", label: "3 Purple", isDisabled: true },
+  { value: "blue", label: "2 Blue", isDisabled: true },
+  { value: "purple", label: "3 Purple" },
   {
     value: "red",
     label: "4 Red",
@@ -67,15 +67,24 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
     })
   }, [query])
 
-  const currentOptions: Option[] = searchable ? filteredData : options
+  const currentOptions: readonly Option[] = searchable ? filteredData : options
 
   useEffect(() => {
-    console.log("rendered select")
+    // console.log("rendered select")
     if (activeDisplayBox) {
-      // Adjust the current focus
+      // Adjust the current focus for unsearchable
       currentFocus =
         typeof selected == "number" ? selected : hasCleaned ? currentFocus : 0
       hasCleaned = undefined
+
+      // adjust the original currentFocus of currentOptions during filtering
+      if (searchable && typeof selected == "number") {
+        const oriCurrentFocus = currentOptions.findIndex(
+          (currentOption) => currentOption.value == options[selected].value
+        )
+
+        currentFocus = oriCurrentFocus == -1 ? 0 : oriCurrentFocus
+      }
 
       if (currentOptions.length > 0) {
         addSemiActive()
@@ -91,7 +100,10 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
         if (isClickedInsideDisplayBox && e.target != inputRef.current)
           e.preventDefault()
       }
-      window.onkeydown = currentOptions.length > 0 ? handleKeyboard : null
+      // prevent an input from moving caret
+      window.onkeydown = (e) => {
+        if (e.key == "ArrowDown" || e.key == "ArrowUp") e.preventDefault()
+      }
     } else {
       window.onmousedown = null
       window.onkeydown = null
@@ -116,10 +128,12 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
   function handleToggleActive() {
     inputRef.current?.focus()
     setOpenOptionContainer(!openOptionContainer)
+    if (query) setQuery("")
   }
 
   function handleSelected(index: number) {
     if (searchable) {
+      // adjust the original index of options during filtering
       index = options.findIndex(
         (option) => option.value == currentOptions[index].value
       )
@@ -132,9 +146,19 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
     inputRef.current?.blur()
   }
 
-  function handleKeyboard(e: globalThis.KeyboardEvent) {
-    // open openOptionContainer during activeDisplayBox is true but openOptionContainer is false
-    // TODO activeDisplayBox is true but openOptionContainer is false when backspace pressed, i want openOptionContainer still false
+  function handleKeyboardPressedDown(e: KeyboardEvent) {
+    const allowedKeys = [
+      "Tab",
+      "Enter",
+      "Backspace",
+      "ArrowDown",
+      "ArrowUp",
+      "F5",
+    ]
+
+    // prevent keyboard from not allowed keys during !searchable
+    if (!searchable && !allowedKeys.includes(e.key)) e.preventDefault()
+
     if (!openOptionContainer) setOpenOptionContainer(true)
     if (!optionContainerRef.current) return
 
@@ -145,7 +169,7 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
     addSemiActive()
     handleScrolling()
 
-    if (e.key == "Enter")
+    if (e.key == "Tab" || e.key == "Enter")
       optionContainerRef.current.querySelectorAll("li")[currentFocus].click()
   }
 
@@ -213,18 +237,22 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
     hasCleaned = true
   }
 
-  function handleSearch(e: ChangeEvent<HTMLInputElement>) {
+  function handleSearching(e: ChangeEvent<HTMLInputElement>) {
     isSearching = true
     setQuery(e.target.value.trimStart())
   }
 
-  function doClear2(e: KeyboardEvent) {
-    if (e.key == "Backspace" && !isSearching) {
+  function handleKeyboardPressedUp(e: KeyboardEvent) {
+    if ((e.key == "Backspace" || e.key == "Delete") && !isSearching) {
       setSelected(null)
       hasCleaned = true
-    } else {
-      isSearching = false
-    }
+    } else isSearching = false
+  }
+
+  function getOriginalSelected(index: number) {
+    return searchable && typeof selected == "number"
+      ? options[selected].value == currentOptions[index].value
+      : index == selected
   }
 
   return (
@@ -261,9 +289,11 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
               searchable && "absolute left-0 right-0"
             )}
             value={query}
-            onKeyUp={searchable ? doClear2 : undefined}
-            onKeyDown={searchable ? undefined : (e) => e.preventDefault()}
-            onChange={handleSearch}
+            onKeyUp={handleKeyboardPressedUp}
+            onKeyDown={
+              currentOptions.length > 0 ? handleKeyboardPressedDown : undefined
+            }
+            onChange={handleSearching}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
@@ -310,7 +340,7 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
                 key={i}
                 className={clsx(
                   "flex items-center p-2",
-                  i == selected && "bg-green-600"
+                  getOriginalSelected(i) && "bg-green-600"
                 )}
                 onClick={
                   !currentOption.isDisabled
@@ -323,7 +353,7 @@ const Select2: FC<SelectProps> = ({ clearable, searchable }) => {
                 <span
                   className={clsx(
                     "pointer-events-none text-sm",
-                    i == selected && "text-white",
+                    getOriginalSelected(i) && "text-white",
                     currentOption.isDisabled && "text-gray-300"
                   )}
                 >
