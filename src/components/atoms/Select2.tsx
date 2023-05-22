@@ -109,10 +109,6 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
         // prevent an input from losing focus and still get select event
         if (isClickedInsideDisplayBox && e.target != inputRef.current)
           e.preventDefault()
-
-        if (isMulti && optionContainerRef.current?.contains(e.target as Node)) {
-          e.preventDefault()
-        }
       }
       // prevent an input from moving caret
       window.onkeydown = (e) => {
@@ -174,16 +170,18 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
     if (!isSearchable && !allowedKeys.includes(e.key)) e.preventDefault()
 
     setTimeout(() => {
-      if (!isClearable && (e.key == "Backspace" || e.key == "Delete")) return
+      const deleteKeys = e.key == "Backspace" || e.key == "Delete"
+
+      if (!isClearable && deleteKeys) return
 
       const inputValue = (e.target as HTMLInputElement).value
 
-      if (e.key == "Backspace" && inputValue == "" && isSearching) {
+      if (deleteKeys && inputValue == "" && isSearching) {
         isSearching = false
         return
       }
 
-      if ((e.key == "Backspace" || e.key == "Delete") && !isSearching) {
+      if (deleteKeys && !isSearching) {
         if (isMulti) {
           setMultiSelected((oldMultiSelected) => oldMultiSelected.slice(0, -1))
         } else {
@@ -192,7 +190,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
         }
       }
 
-      if (!openOptionContainer && (inputValue != "" || e.key != "Backspace"))
+      if (!openOptionContainer && (inputValue != "" || deleteKeys))
         setOpenOptionContainer(true)
     }, 0)
 
