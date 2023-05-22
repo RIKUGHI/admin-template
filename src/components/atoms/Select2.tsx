@@ -139,6 +139,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
     inputRef.current?.focus()
     setOpenOptionContainer(!openOptionContainer)
     setQuery("")
+    isSearching = false
   }
 
   function handleSelected(index: number) {
@@ -190,7 +191,10 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
         }
       }
 
-      if (!openOptionContainer && (inputValue != "" || deleteKeys))
+      if (
+        !openOptionContainer &&
+        (inputValue != "" || (e.key != "Backspace" && e.key != "Delete"))
+      )
         setOpenOptionContainer(true)
     }, 0)
 
