@@ -59,20 +59,28 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
   const [activeDisplayBox, setActiveDisplayBox] = useState(false)
   const [openOptionContainer, setOpenOptionContainer] = useState(false)
   const [selected, setSelected] = useState<number | null>(null)
+  const [multiSelected, setMultiSelected] = useState<number[]>([])
   const [query, setQuery] = useState("")
 
   const filteredData: Option[] = useMemo(() => {
-    return options.filter((option) => {
-      return option.label.toLowerCase().includes(query)
+    return options.filter((option, i) => {
+      return (
+        !multiSelected.includes(i) && option.label.toLowerCase().includes(query)
+      )
     })
-  }, [query])
+  }, [query, multiSelected])
+
+  if (isMulti) {
+    isClearable = true
+    isSearchable = true
+  }
 
   const currentOptions: readonly Option[] = isSearchable
     ? filteredData
     : options
 
   useEffect(() => {
-    // console.log("rendered select")
+    console.log("rendered select")
     if (activeDisplayBox) {
       // Adjust the current focus for unsearchable
       currentFocus =
@@ -101,6 +109,10 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
         // prevent an input from losing focus and still get select event
         if (isClickedInsideDisplayBox && e.target != inputRef.current)
           e.preventDefault()
+
+        if (isMulti && optionContainerRef.current?.contains(e.target as Node)) {
+          e.preventDefault()
+        }
       }
       // prevent an input from moving caret
       window.onkeydown = (e) => {
@@ -130,7 +142,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
   function handleToggleActive() {
     inputRef.current?.focus()
     setOpenOptionContainer(!openOptionContainer)
-    if (query) setQuery("")
+    setQuery("")
   }
 
   function handleSelected(index: number) {
@@ -142,26 +154,48 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
       setQuery("")
     }
 
-    setSelected(index)
+    if (isMulti) {
+      setMultiSelected((oldMultiSelected) => [...oldMultiSelected, index])
+    } else setSelected(index)
+
     setOpenOptionContainer(false)
+
+    if (isMulti && currentEvent == "keyboard") return
+
     setActiveDisplayBox(false)
     inputRef.current?.blur()
   }
 
-  function handleKeyboardPressedDown(e: KeyboardEvent) {
-    const allowedKeys = [
-      "Tab",
-      "Enter",
-      "Backspace",
-      "ArrowDown",
-      "ArrowUp",
-      "F5",
-    ]
+  function handleKeyboard(e: KeyboardEvent) {
+    // TODO When the first type is ArrowUp the currentFocus must be last option
+    const allowedKeys = ["Tab", "Enter", "ArrowDown", "ArrowUp", "F5"]
 
     // prevent keyboard from not allowed keys during !isSearchable
     if (!isSearchable && !allowedKeys.includes(e.key)) e.preventDefault()
 
-    if (!openOptionContainer) setOpenOptionContainer(true)
+    setTimeout(() => {
+      if (!isClearable && (e.key == "Backspace" || e.key == "Delete")) return
+
+      const inputValue = (e.target as HTMLInputElement).value
+
+      if (e.key == "Backspace" && inputValue == "" && isSearching) {
+        isSearching = false
+        return
+      }
+
+      if ((e.key == "Backspace" || e.key == "Delete") && !isSearching) {
+        if (isMulti) {
+          setMultiSelected((oldMultiSelected) => oldMultiSelected.slice(0, -1))
+        } else {
+          setSelected(null)
+          hasCleaned = true
+        }
+      }
+
+      if (!openOptionContainer && (inputValue != "" || e.key != "Backspace"))
+        setOpenOptionContainer(true)
+    }, 0)
+
     if (!optionContainerRef.current) return
 
     if (currentEvent != "keyboard") currentEvent = "keyboard"
@@ -235,20 +269,18 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
 
   function doClear(e: MouseEvent) {
     e.stopPropagation()
-    setSelected(null)
-    hasCleaned = true
+
+    if (isMulti) {
+      setMultiSelected([])
+    } else {
+      setSelected(null)
+      hasCleaned = true
+    }
   }
 
   function handleSearching(e: ChangeEvent<HTMLInputElement>) {
     isSearching = true
     setQuery(e.target.value.trimStart())
-  }
-
-  function handleKeyboardPressedUp(e: KeyboardEvent) {
-    if ((e.key == "Backspace" || e.key == "Delete") && !isSearching) {
-      setSelected(null)
-      hasCleaned = true
-    } else isSearching = false
   }
 
   function getOriginalSelected(index: number) {
@@ -271,12 +303,30 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
         onClick={handleToggleActive}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="relative flex flex-1 items-center">
-          {isMulti ? (
-            <div className="bb flex flex-wrap text-sm">
-              <div className="m-0.5 rounded bg-gray-300 px-1">Tag 1</div>
-              <div className="m-0.5 rounded bg-gray-300 px-1">Tag 1</div>
-            </div>
+        <div className="relative flex flex-1 flex-wrap items-center">
+          {isMulti && multiSelected.length > 0 ? (
+            <>
+              {multiSelected.map((selected, i) => (
+                <div key={i} className="m-0.5 flex rounded bg-gray-300 text-sm">
+                  <span className="line-clamp-1 px-1 leading-snug">
+                    {options[selected].label}
+                  </span>
+                  <button
+                    className="group flex cursor-context-menu items-center px-1 hover:bg-red-200"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setMultiSelected((oldMultiSelected) => {
+                        const newMultiSelected = [...oldMultiSelected]
+                        newMultiSelected.splice(i, 1)
+                        return newMultiSelected
+                      })
+                    }}
+                  >
+                    <IoClose className="text-sm group-hover:text-red-600" />
+                  </button>
+                </div>
+              ))}
+            </>
           ) : (
             !query && (
               <span
@@ -296,32 +346,31 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
             type="text"
             className={clsx(
               "sr-onlyx h-9 bg-transparent p-0 text-sm focus:ring-transparent",
-              isSearchable && "absolute left-0 right-0"
+              isSearchable && !isMulti && "absolute left-0 right-0",
+              isMulti && "flex-1"
             )}
             value={query}
-            onKeyUp={handleKeyboardPressedUp}
-            onKeyDown={
-              currentOptions.length > 0 ? handleKeyboardPressedDown : undefined
-            }
+            onKeyDown={currentOptions.length > 0 ? handleKeyboard : undefined}
             onChange={handleSearching}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
         </div>
         <div className="flex space-x-2">
-          {typeof selected == "number" && isClearable && (
-            <button
-              className={clsx(
-                "cursor-context-menu outline-none transition",
-                activeDisplayBox
-                  ? "text-gray-600"
-                  : "text-gray-400 hover:text-gray-600"
-              )}
-              onClick={doClear}
-            >
-              <IoClose className="text-lg" />
-            </button>
-          )}
+          {isClearable &&
+            (typeof selected == "number" || multiSelected.length > 0) && (
+              <button
+                className={clsx(
+                  "cursor-context-menu outline-none transition",
+                  activeDisplayBox
+                    ? "text-gray-600"
+                    : "text-gray-400 hover:text-gray-600"
+                )}
+                onClick={doClear}
+              >
+                <IoClose className="text-lg" />
+              </button>
+            )}
           <span className="my-2 w-0.5 bg-gray-400"></span>
           <button
             className={clsx(
@@ -338,7 +387,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
       {openOptionContainer && (
         <div
           ref={optionContainerRef}
-          className="scrollbar absolute inset-x-0 top-11 z-10 max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1 shadow-md"
+          className="scrollbar absolute inset-x-0 top-[calc(100%+0.4rem)] z-10 max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1 shadow-md"
           onMouseLeave={handleMouseLeave}
         >
           <ul>
