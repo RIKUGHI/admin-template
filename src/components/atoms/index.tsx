@@ -4,7 +4,7 @@ export { default as InputFloatingLabel } from "./InputFloatingLabel.tsx"
 export { default as TextArea } from "./TextArea.tsx"
 export { default as TextAreaFloatingLabel } from "./TextAreaFloatingLabel.tsx"
 export { default as Select } from "./Select.tsx"
-export { default as Select2 } from "./Select2.tsx"
+export { default as Select2, type Option } from "./Select2.tsx"
 export { default as BaseForm, type CommonBaseFormProps } from "./BaseForm.tsx"
 export {
   default as NavigationLink,

@@ -11,30 +11,11 @@ import {
 } from "react"
 import { IoChevronDown, IoClose } from "react-icons/io5"
 
-interface Option {
+export interface Option {
   readonly value: string
   readonly label: string
   readonly isDisabled?: boolean
 }
-
-const options: readonly Option[] = [
-  { value: "ocean", label: "1 Ocean" },
-  { value: "blue", label: "2 Blue", isDisabled: true },
-  { value: "purple", label: "3 Purple" },
-  {
-    value: "red",
-    label: "4 Red",
-  },
-  { value: "orange", label: "5 Orange" },
-  {
-    value: "yellow",
-    label: "6 Yellow",
-  },
-  { value: "green", label: "7 Green" },
-  { value: "forest", label: "8 Forest" },
-  { value: "slate", label: "9 Slate" },
-  { value: "silver", label: "10 Silver" },
-]
 
 /**
  * Why these variable placed outside of component
@@ -46,21 +27,36 @@ let hasCleaned: boolean | undefined
 let isSearching = false
 
 interface SelectProps {
+  defaultValue?: Option | Option[]
   isClearable?: boolean
   isSearchable?: boolean
   isMulti?: boolean
-  defaultValue?: number
+  options: readonly Option[]
 }
 
-const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
+const Select2: FC<SelectProps> = ({
+  defaultValue,
+  isClearable,
+  isSearchable,
+  isMulti,
+  options,
+}) => {
   const displayBoxRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const optionContainerRef = useRef<HTMLDivElement>(null)
 
   const [activeDisplayBox, setActiveDisplayBox] = useState(false)
   const [openOptionContainer, setOpenOptionContainer] = useState(false)
-  const [selected, setSelected] = useState<Option | null>(null)
-  const [multiSelected, setMultiSelected] = useState<Option[]>([])
+  const [selected, setSelected] = useState<Option | null>(
+    typeof defaultValue == "object" && !Array.isArray(defaultValue)
+      ? defaultValue
+      : null
+  )
+  const [multiSelected, setMultiSelected] = useState<Option[]>(
+    typeof defaultValue == "object" && Array.isArray(defaultValue)
+      ? defaultValue
+      : []
+  )
   const [query, setQuery] = useState("")
 
   const filteredData: Option[] = useMemo(() => {
