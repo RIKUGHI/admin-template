@@ -49,6 +49,7 @@ interface SelectProps {
   isClearable?: boolean
   isSearchable?: boolean
   isMulti?: boolean
+  defaultValue?: number
 }
 
 const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
@@ -58,14 +59,15 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
 
   const [activeDisplayBox, setActiveDisplayBox] = useState(false)
   const [openOptionContainer, setOpenOptionContainer] = useState(false)
-  const [selected, setSelected] = useState<number | null>(null)
-  const [multiSelected, setMultiSelected] = useState<number[]>([])
+  const [selected, setSelected] = useState<Option | null>(null)
+  const [multiSelected, setMultiSelected] = useState<Option[]>([])
   const [query, setQuery] = useState("")
 
   const filteredData: Option[] = useMemo(() => {
     return options.filter((option, i) => {
       return (
-        !multiSelected.includes(i) && option.label.toLowerCase().includes(query)
+        !multiSelected.some((selected) => selected.value == option.value) &&
+        option.label.toLowerCase().includes(query)
       )
     })
   }, [query, multiSelected])
@@ -83,17 +85,15 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
     console.log("rendered select")
     if (activeDisplayBox) {
       // Adjust the current focus for unsearchable
-      currentFocus =
-        typeof selected == "number" ? selected : hasCleaned ? currentFocus : 0
-      hasCleaned = undefined
-
-      // adjust the original currentFocus of currentOptions during filtering
-      if (isSearchable && typeof selected == "number") {
+      if (selected) {
         const oriCurrentFocus = currentOptions.findIndex(
-          (currentOption) => currentOption.value == options[selected].value
+          (currentOption) => currentOption.value == selected.value
         )
 
         currentFocus = oriCurrentFocus == -1 ? 0 : oriCurrentFocus
+      } else {
+        currentFocus = hasCleaned ? currentFocus : 0
+        hasCleaned = undefined
       }
 
       if (currentOptions.length > 0) {
@@ -129,6 +129,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
       setOpenOptionContainer(false)
       setActiveDisplayBox(false)
     }
+    setQuery("")
   }
 
   function handleMouseLeave() {
@@ -142,18 +143,12 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
     isSearching = false
   }
 
-  function handleSelected(index: number) {
-    if (isSearchable) {
-      // adjust the original index of options during filtering
-      index = options.findIndex(
-        (option) => option.value == currentOptions[index].value
-      )
-      setQuery("")
-    }
+  function handleSelected(option: Option) {
+    if (isSearchable) setQuery("")
 
     if (isMulti) {
-      setMultiSelected((oldMultiSelected) => [...oldMultiSelected, index])
-    } else setSelected(index)
+      setMultiSelected((oldMultiSelected) => [...oldMultiSelected, option])
+    } else setSelected(option)
 
     setOpenOptionContainer(false)
 
@@ -164,7 +159,6 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
   }
 
   function handleKeyboard(e: KeyboardEvent) {
-    // TODO When the first type is ArrowUp the currentFocus must be last option
     const allowedKeys = ["Tab", "Enter", "ArrowDown", "ArrowUp", "F5"]
 
     // prevent keyboard from not allowed keys during !isSearchable
@@ -277,6 +271,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
     } else {
       setSelected(null)
       hasCleaned = true
+      if (!openOptionContainer) currentFocus = 0
     }
   }
 
@@ -286,9 +281,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
   }
 
   function getOriginalSelected(index: number) {
-    return isSearchable && typeof selected == "number"
-      ? options[selected].value == currentOptions[index].value
-      : index == selected
+    return selected ? currentOptions[index].value == selected.value : false
   }
 
   return (
@@ -311,7 +304,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
               {multiSelected.map((selected, i) => (
                 <div key={i} className="m-0.5 flex rounded bg-gray-300 text-sm">
                   <span className="line-clamp-1 px-1 leading-snug">
-                    {options[selected].label}
+                    {selected.label}
                   </span>
                   <button
                     className="group flex cursor-context-menu items-center px-1 hover:bg-red-200"
@@ -337,9 +330,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
                   selected == null && "text-gray-500"
                 )}
               >
-                {typeof selected == "number"
-                  ? currentOptions[selected].label
-                  : "Select..."}
+                {selected ? selected.label : "Select..."}
               </span>
             )
           )}
@@ -359,20 +350,19 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
           />
         </div>
         <div className="flex space-x-2">
-          {isClearable &&
-            (typeof selected == "number" || multiSelected.length > 0) && (
-              <button
-                className={clsx(
-                  "cursor-context-menu outline-none transition",
-                  activeDisplayBox
-                    ? "text-gray-600"
-                    : "text-gray-400 hover:text-gray-600"
-                )}
-                onClick={doClear}
-              >
-                <IoClose className="text-lg" />
-              </button>
-            )}
+          {isClearable && (selected || multiSelected.length > 0) && (
+            <button
+              className={clsx(
+                "cursor-context-menu outline-none transition",
+                activeDisplayBox
+                  ? "text-gray-600"
+                  : "text-gray-400 hover:text-gray-600"
+              )}
+              onClick={doClear}
+            >
+              <IoClose className="text-lg" />
+            </button>
+          )}
           <span className="my-2 w-0.5 bg-gray-400"></span>
           <button
             className={clsx(
@@ -405,7 +395,7 @@ const Select2: FC<SelectProps> = ({ isClearable, isSearchable, isMulti }) => {
                 )}
                 onClick={
                   !currentOption.isDisabled
-                    ? () => handleSelected(i)
+                    ? () => handleSelected(currentOption)
                     : undefined
                 }
                 onMouseOver={() => handleMouseOver(i)}
