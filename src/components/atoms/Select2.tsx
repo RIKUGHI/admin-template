@@ -361,9 +361,12 @@ const Select2: FC<SelectProps> = ({
             ref={inputRef}
             type="text"
             className={clsx(
-              "sr-onlyx h-9 bg-transparent p-0 text-sm focus:ring-transparent",
-              isSearchable && !isMulti && "absolute left-0 right-0",
-              isMulti && "flex-1"
+              "h-9 bg-transparent p-0 text-sm focus:ring-transparent",
+              isSearchable
+                ? isMulti && multiSelected.length > 0
+                  ? "flex-1"
+                  : "absolute left-0 right-0"
+                : "sr-only"
             )}
             value={query}
             onKeyDown={currentOptions.length > 0 ? handleKeyboard : undefined}
