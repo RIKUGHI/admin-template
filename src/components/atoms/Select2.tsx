@@ -361,7 +361,7 @@ const Select2: FC<SelectProps> = ({
             ref={inputRef}
             type="text"
             className={clsx(
-              "h-9 bg-transparent p-0 text-sm focus:ring-transparent",
+              "h-9 border-none bg-transparent p-0 text-sm focus:ring-transparent",
               isSearchable
                 ? isMulti && multiSelected.length > 0
                   ? "flex-1"
