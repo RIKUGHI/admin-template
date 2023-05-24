@@ -60,7 +60,7 @@ const Select2: FC<SelectProps> = ({
   const [query, setQuery] = useState("")
 
   const filteredData: Option[] = useMemo(() => {
-    return options.filter((option, i) => {
+    return options.filter((option) => {
       return (
         !multiSelected.some((selected) => selected.value == option.value) &&
         option.label.toLowerCase().includes(query)
@@ -78,7 +78,8 @@ const Select2: FC<SelectProps> = ({
     : options
 
   useEffect(() => {
-    console.log("rendered select")
+    // console.log("rendered select")
+
     if (activeDisplayBox) {
       // Adjust the current focus for unsearchable
       if (selected) {
@@ -109,6 +110,22 @@ const Select2: FC<SelectProps> = ({
       // prevent an input from moving caret
       window.onkeydown = (e) => {
         if (e.key == "ArrowDown" || e.key == "ArrowUp") e.preventDefault()
+      }
+
+      if (
+        optionContainerRef.current &&
+        optionContainerRef.current.getBoundingClientRect().bottom >
+          window.innerHeight
+      ) {
+        /**
+         * The direction of the option container
+         *
+         * 2 different views (data-view)
+         *
+         * 1: Top to Bottom
+         * 2: Bottom to Top
+         */
+        optionContainerRef.current.setAttribute("data-view", "2")
       }
     } else {
       window.onmousedown = null
@@ -375,7 +392,9 @@ const Select2: FC<SelectProps> = ({
       {openOptionContainer && (
         <div
           ref={optionContainerRef}
-          className="scrollbar absolute inset-x-0 top-[calc(100%+0.4rem)] z-10 max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1 shadow-md"
+          id="option-container"
+          className="scrollbar absolute inset-x-0 z-10 max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1"
+          data-view={1}
           onMouseLeave={handleMouseLeave}
         >
           <ul>

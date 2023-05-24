@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react"
 import { FaDesktop, FaListUl, FaPlus } from "react-icons/fa"
 import { NavigationLink, NavigationProps } from "../atoms"
 import { NestedNavigation } from "../molecules"

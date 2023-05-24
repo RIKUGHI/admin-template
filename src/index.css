@@ -65,6 +65,14 @@
      */
     @apply max-h-[calc(36px*3+4px*2)] mt-1
   }
+
+  #option-container[data-view='1'] {
+    @apply top-[calc(100%+0.4rem)] shadow-md
+  }
+
+  #option-container[data-view='2'] {
+    @apply bottom-[calc(100%+0.4rem)] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)]
+  }
 }
 
 @layer utilities {
