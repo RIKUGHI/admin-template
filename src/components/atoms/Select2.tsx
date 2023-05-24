@@ -25,6 +25,7 @@ let currentFocus = 0
 let currentEvent: "mouse" | "keyboard" | undefined
 let hasCleaned: boolean | undefined
 let isSearching = false
+let isFirstKeyIsArrowUp = false
 
 interface SelectProps {
   defaultValue?: Option | Option[]
@@ -89,8 +90,14 @@ const Select2: FC<SelectProps> = ({
 
         currentFocus = oriCurrentFocus == -1 ? 0 : oriCurrentFocus
       } else {
-        currentFocus = hasCleaned ? currentFocus : 0
+        currentFocus = hasCleaned
+          ? currentFocus
+          : isFirstKeyIsArrowUp
+          ? currentOptions.length - 1
+          : 0
+
         hasCleaned = undefined
+        isFirstKeyIsArrowUp = false
       }
 
       if (currentOptions.length > 0) {
@@ -201,8 +208,11 @@ const Select2: FC<SelectProps> = ({
       if (
         !openOptionContainer &&
         (inputValue != "" || (e.key != "Backspace" && e.key != "Delete"))
-      )
+      ) {
         setOpenOptionContainer(true)
+
+        if (e.key == "ArrowUp") isFirstKeyIsArrowUp = true
+      }
     }, 0)
 
     if (!optionContainerRef.current) return
