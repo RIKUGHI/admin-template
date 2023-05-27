@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { number } from "prop-types"
 import React, { FC, useEffect, useState } from "react"
+import { IconType } from "react-icons"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 
 const days = ["Su", "Mo", "Tu", "We", "Th", "Fri", "Sa"]
@@ -36,7 +37,8 @@ const DatePicker: FC<Props> = ({ asSingle = true, showFooter }) => {
   const [currentMonth, setCurrentMonth] = useState(date.getMonth())
   const [currentYear, setCurrentYear] = useState(date.getFullYear())
 
-  const [stackedYearIntervals, setStackedYearIntervals] = useState(0)
+  const numberofYearsShown = 12
+  const [stackedYearIntervals, setStackedYearIntervals] = useState(-2028)
 
   let lastDateofMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
 
@@ -57,6 +59,9 @@ const DatePicker: FC<Props> = ({ asSingle = true, showFooter }) => {
   })
 
   function handleToggleTab(v: TabState) {
+    // reset stacked year intervals to 0
+    // if (v === "YEAR") setStackedYearIntervals(0)
+
     setActiveTab((prev) => (prev === v ? null : v))
   }
 
@@ -79,7 +84,10 @@ const DatePicker: FC<Props> = ({ asSingle = true, showFooter }) => {
     }
 
     if (activeTab === "YEAR") {
-      setStackedYearIntervals((prev) => prev + (type === "PREV" ? -12 : 12))
+      setStackedYearIntervals(
+        (prev) =>
+          prev + (type === "PREV" ? -numberofYearsShown : numberofYearsShown)
+      )
     }
   }
 
@@ -126,47 +134,30 @@ const DatePicker: FC<Props> = ({ asSingle = true, showFooter }) => {
                       currentYear + stackedYearIntervals < 0
 
                     return (
-                      <button
-                        className={clsx(
-                          "flex items-center justify-center rounded-full p-2",
-                          isYearNegative ? "text-gray-300" : "hover:bg-gray-50"
-                        )}
+                      <PrevNextButton
+                        icon={FaChevronLeft}
+                        isYearNegative={isYearNegative}
                         onClick={() => handlePrevNext("PREV")}
-                        disabled={isYearNegative}
-                      >
-                        <FaChevronLeft className="text-xs" />
-                      </button>
+                      />
                     )
                   })()}
-                <button
-                  className={clsx(
-                    "flex-1 rounded-md py-2 text-center text-sm font-semibold",
-                    activeTab === "MONTH"
-                      ? "bg-green-50 text-green-600"
-                      : "hover:bg-green-50 hover:text-green-600"
-                  )}
+                <MonthYearSwitcher
+                  label={months[currentMonth]}
+                  isNavigator
+                  active={activeTab === "MONTH"}
                   onClick={() => handleToggleTab("MONTH")}
-                >
-                  {months[currentMonth]}
-                </button>
-                <button
-                  className={clsx(
-                    "flex-1 rounded-md py-2 text-center text-sm font-semibold",
-                    activeTab === "YEAR"
-                      ? "bg-green-50 text-green-600"
-                      : "hover:bg-green-50 hover:text-green-600"
-                  )}
+                />
+                <MonthYearSwitcher
+                  label={currentYear}
+                  isNavigator
+                  active={activeTab === "YEAR"}
                   onClick={() => handleToggleTab("YEAR")}
-                >
-                  {currentYear}
-                </button>
+                />
                 {activeTab !== "MONTH" && (
-                  <button
-                    className="flex items-center justify-center rounded-full p-2 hover:bg-gray-50"
+                  <PrevNextButton
+                    icon={FaChevronRight}
                     onClick={() => handlePrevNext("NEXT")}
-                  >
-                    <FaChevronRight className="text-xs" />
-                  </button>
+                  />
                 )}
               </div>
 
@@ -180,32 +171,25 @@ const DatePicker: FC<Props> = ({ asSingle = true, showFooter }) => {
               >
                 {activeTab === "MONTH" &&
                   months.map((month, i) => (
-                    <button
+                    <MonthYearSwitcher
                       key={i}
-                      className="flex-1 rounded-md py-2 text-center text-sm font-semibold hover:bg-gray-50"
+                      label={month}
                       onClick={() => handleActiveMonth(i)}
-                    >
-                      {month}
-                    </button>
+                    />
                   ))}
 
                 {activeTab === "YEAR" &&
-                  Array.from({ length: 12 }).map((_, i) => {
+                  Array.from({ length: numberofYearsShown }).map((_, i) => {
                     const year = currentYear + i + stackedYearIntervals
                     const isYearNegative = year < 0
 
                     return (
-                      <button
+                      <MonthYearSwitcher
                         key={i}
-                        className={clsx(
-                          "flex-1 rounded-md py-2 text-center text-sm font-semibold",
-                          isYearNegative ? "text-gray-300" : "hover:bg-gray-50"
-                        )}
+                        label={year}
+                        isYearNegative={isYearNegative}
                         onClick={() => handleActiveYear(year)}
-                        disabled={isYearNegative}
-                      >
-                        {year}
-                      </button>
+                      />
                     )
                   })}
 
@@ -474,6 +458,68 @@ const DatePicker: FC<Props> = ({ asSingle = true, showFooter }) => {
 }
 
 export default DatePicker
+
+interface PrevNextButtonProps {
+  icon: IconType
+  isYearNegative?: boolean
+  onClick?: () => void
+}
+
+const PrevNextButton: React.FC<PrevNextButtonProps> = ({
+  icon: Icon,
+  isYearNegative,
+  onClick,
+}) => {
+  return (
+    <button
+      className={clsx(
+        "flex items-center justify-center rounded-full p-2",
+        isYearNegative ? "text-gray-300" : "hover:bg-gray-50"
+      )}
+      onClick={onClick}
+      disabled={isYearNegative}
+    >
+      <Icon className="text-xs" />
+    </button>
+  )
+}
+
+interface MonthYearSwitcherProps {
+  /** provided month and year */
+  label: string | number
+  isNavigator?: boolean
+  /** can be used if isNavigator is true */
+  active?: boolean
+  isYearNegative?: boolean
+  onClick?: () => void
+}
+
+const MonthYearSwitcher: React.FC<MonthYearSwitcherProps> = ({
+  label,
+  isNavigator,
+  active,
+  isYearNegative,
+  onClick,
+}) => {
+  return (
+    <button
+      className={clsx(
+        "flex-1 rounded-md py-2 text-center text-sm font-semibold ",
+        isNavigator
+          ? active
+            ? "bg-green-50 text-green-600"
+            : "hover:bg-green-50 hover:text-green-600"
+          : isYearNegative
+          ? "text-gray-300"
+          : "hover:bg-gray-50"
+      )}
+      onClick={onClick}
+      disabled={isYearNegative}
+    >
+      {label}
+    </button>
+  )
+}
 
 interface DateProps {
   date: number
