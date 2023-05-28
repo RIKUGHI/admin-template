@@ -77,8 +77,10 @@ const DatePicker: FC<Props> = ({
       setCurrentYear1(year)
 
       if (new Date(year, month) >= new Date(currentYear2, currentMonth2)) {
-        console.log("next")
-        const date = new Date(year, month)
+        const date = new Date(
+          year,
+          month >= currentMonth2 ? month + 1 : currentMonth2
+        )
 
         setDate2(date)
         setCurrentMonth2(date.getMonth())
@@ -88,6 +90,17 @@ const DatePicker: FC<Props> = ({
 
     if (idComp === "datePicker2") {
       setCurrentYear2(year)
+
+      if (new Date(year, month) <= new Date(currentYear1, currentMonth1)) {
+        const date = new Date(
+          year,
+          month <= currentMonth1 ? month - 1 : currentMonth1
+        )
+
+        setDate1(date)
+        setCurrentMonth1(date.getMonth())
+        setCurrentYear1(date.getFullYear())
+      }
     }
   }
 
