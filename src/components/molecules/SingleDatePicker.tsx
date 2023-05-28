@@ -8,6 +8,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import clsx from "clsx"
 
 export type IdDatePickerState = "datePicker1" | "datePicker2"
+export type DatePickerNavigationType = "PREV" | "NEXT"
 type TabState = "MONTH" | "YEAR" | null
 
 interface Props {
@@ -81,7 +82,7 @@ const SingleDatePicker: React.FC<Props> = ({
     setActiveTab((prev) => (prev === v ? null : v))
   }
 
-  function handlePrevNext(type: "PREV" | "NEXT") {
+  function handlePrevNext(type: DatePickerNavigationType) {
     if (!activeTab) {
       const newCurrentMonth = currentMonth + (type === "PREV" ? -1 : 1)
 

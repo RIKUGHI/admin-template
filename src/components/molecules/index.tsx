@@ -12,4 +12,5 @@ export { default as Modal } from "./Modal"
 export {
   default as SingleDatePicker,
   type IdDatePickerState,
+  type DatePickerNavigationType,
 } from "./SingleDatePicker"
