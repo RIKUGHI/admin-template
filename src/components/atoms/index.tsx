@@ -19,4 +19,3 @@ export {
   default as BreadcrumbLink,
   type BreadcrumbLinkProps,
 } from "./BreadcrumbLink.tsx"
-export { default as DatePicker } from "./DatePicker.tsx"
