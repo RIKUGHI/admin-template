@@ -9,4 +9,7 @@ export { default as Pagination } from "./Pagination"
 export { default as Alert } from "./Alert"
 export { default as Breadcrumb } from "./Breadcrumb"
 export { default as Modal } from "./Modal"
-export { default as SingleDatePicker } from "./SingleDatePicker"
+export {
+  default as SingleDatePicker,
+  type IdDatePickerState,
+} from "./SingleDatePicker"

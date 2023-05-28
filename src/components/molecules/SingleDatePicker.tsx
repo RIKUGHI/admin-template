@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   DateItem,
   MonthYearSwitcher,
@@ -7,9 +7,35 @@ import {
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import clsx from "clsx"
 
+export type IdDatePickerState = "datePicker1" | "datePicker2"
 type TabState = "MONTH" | "YEAR" | null
 
-const SingleDatePicker: React.FC = () => {
+interface Props {
+  /** indications for the component itself */
+  id: IdDatePickerState
+  date: Date
+  currentMonth: number
+  currentYear: number
+  setCurrentMonth: (
+    month: number,
+    year: number,
+    idComp: IdDatePickerState
+  ) => void
+  setCurrentYear: (
+    year: number,
+    month: number,
+    idComp: IdDatePickerState
+  ) => void
+}
+
+const SingleDatePicker: React.FC<Props> = ({
+  id,
+  date,
+  currentMonth,
+  currentYear,
+  setCurrentMonth,
+  setCurrentYear,
+}) => {
   const days = ["Su", "Mo", "Tu", "We", "Th", "Fri", "Sa"]
   const months = [
     "JAN",
@@ -28,10 +54,6 @@ const SingleDatePicker: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<TabState>(null)
 
-  const [date, setDate] = useState(new Date())
-  const [currentMonth, setCurrentMonth] = useState(date.getMonth())
-  const [currentYear, setCurrentYear] = useState(date.getFullYear())
-
   const numberofYearsShown = 12
   const [stackedYearIntervals, setStackedYearIntervals] = useState(0)
 
@@ -47,6 +69,10 @@ const SingleDatePicker: React.FC = () => {
   let lostMonth = new Date(currentYear, currentMonth, 0)
   let lostMonthIndex = lostMonth.getMonth()
   let lastDateofLostMonth = lostMonth.getDate()
+
+  useEffect(() => {
+    console.log("render single datepicker")
+  })
 
   function handleToggleTab(v: TabState) {
     // reset stacked year intervals to 0
@@ -66,10 +92,10 @@ const SingleDatePicker: React.FC = () => {
           new Date().getDate()
         )
 
-        setCurrentMonth(newDate.getMonth())
-        setCurrentYear(newDate.getFullYear())
+        setCurrentMonth(newDate.getMonth(), newDate.getFullYear(), id)
+        setCurrentYear(newDate.getFullYear(), newDate.getMonth(), id)
       } else {
-        setCurrentMonth(newCurrentMonth)
+        setCurrentMonth(newCurrentMonth, currentYear, id)
       }
     }
 
@@ -82,12 +108,12 @@ const SingleDatePicker: React.FC = () => {
   }
 
   function handleActiveMonth(month: number) {
-    setCurrentMonth(month)
+    setCurrentMonth(month, currentYear, id)
     setActiveTab(null)
   }
 
   function handleActiveYear(year: number) {
-    setCurrentYear(year)
+    setCurrentYear(year, currentMonth, id)
     setActiveTab(null)
   }
 
