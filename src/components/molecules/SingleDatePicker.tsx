@@ -35,7 +35,7 @@ interface Props {
     month: number,
     idComp: IdDatePickerState
   ) => void
-  setValue: (year: number, month: number, date: number) => void
+  setValue: (v: Date) => void
 }
 
 const SingleDatePicker: React.FC<Props> = ({
@@ -254,7 +254,7 @@ const SingleDatePicker: React.FC<Props> = ({
                     isToday={isToday}
                     isSun={isSun}
                     selected={isSelected(i, currentMonth, currentYear)}
-                    onClick={() => setValue(currentYear, currentMonth, i)}
+                    onClick={() => setValue(new Date(currentYear, currentMonth, i))}
                   />
                 )
                 key++

@@ -157,8 +157,8 @@ const DatePicker: FC<Props> = ({
     }
   }
 
-  function handleSetValue(year: number, month: number, date: number) {
-    if (onChange) onChange(new Date(year, month, date))
+  function handleSetValue(v: Date) {
+    if (onChange) onChange(v)
   }
 
   return (
