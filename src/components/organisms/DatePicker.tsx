@@ -32,7 +32,7 @@ const DatePicker: FC<Props> = ({
     console.log("rendered full datepicker")
 
     // add 1 month for first mounted
-    handlePrevNextMonth("NEXT", currentMonth1)
+    if (!asSingle) handlePrevNextMonth("NEXT", currentMonth1)
   }, [])
 
   function handleSetCurrentMonth(
@@ -43,14 +43,20 @@ const DatePicker: FC<Props> = ({
     if (idComp === "datePicker1") {
       setCurrentMonth1(month)
 
-      if (new Date(year, month) >= new Date(currentYear2, currentMonth2))
+      if (
+        !asSingle &&
+        new Date(year, month) >= new Date(currentYear2, currentMonth2)
+      )
         handlePrevNextMonth("NEXT", month)
     }
 
     if (idComp === "datePicker2") {
       setCurrentMonth2(month)
 
-      if (new Date(year, month) <= new Date(currentYear1, currentMonth1))
+      if (
+        !asSingle &&
+        new Date(year, month) <= new Date(currentYear1, currentMonth1)
+      )
         handlePrevNextMonth("PREV", month)
     }
   }
@@ -63,14 +69,20 @@ const DatePicker: FC<Props> = ({
     if (idComp === "datePicker1") {
       setCurrentYear1(year)
 
-      if (new Date(year, month) >= new Date(currentYear2, currentMonth2))
+      if (
+        !asSingle &&
+        new Date(year, month) >= new Date(currentYear2, currentMonth2)
+      )
         handlePrevNextYear("NEXT", year, month)
     }
 
     if (idComp === "datePicker2") {
       setCurrentYear2(year)
 
-      if (new Date(year, month) <= new Date(currentYear1, currentMonth1))
+      if (
+        !asSingle &&
+        new Date(year, month) <= new Date(currentYear1, currentMonth1)
+      )
         handlePrevNextYear("PREV", year, month)
     }
   }
