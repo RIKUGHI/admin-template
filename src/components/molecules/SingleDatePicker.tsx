@@ -11,12 +11,20 @@ export type IdDatePickerState = "datePicker1" | "datePicker2"
 export type DatePickerNavigationType = "PREV" | "NEXT"
 type TabState = "MONTH" | "YEAR" | null
 
+type NullableDate = null | Date
+type DateRange = {
+  startDate: NullableDate
+  endDate: NullableDate
+}
+export type DateValueType = NullableDate | DateRange
+
 interface Props {
   /** indications for the component itself */
   id: IdDatePickerState
   date: Date
   currentMonth: number
   currentYear: number
+  value?: DateValueType
   setCurrentMonth: (
     month: number,
     year: number,
@@ -27,6 +35,7 @@ interface Props {
     month: number,
     idComp: IdDatePickerState
   ) => void
+  setValue: (year: number, month: number, date: number) => void
 }
 
 const SingleDatePicker: React.FC<Props> = ({
@@ -34,8 +43,10 @@ const SingleDatePicker: React.FC<Props> = ({
   date,
   currentMonth,
   currentYear,
+  value,
   setCurrentMonth,
   setCurrentYear,
+  setValue,
 }) => {
   const days = ["Su", "Mo", "Tu", "We", "Th", "Fri", "Sa"]
   const months = [
@@ -116,6 +127,14 @@ const SingleDatePicker: React.FC<Props> = ({
   function handleActiveYear(year: number) {
     setCurrentYear(year, currentMonth, id)
     setActiveTab(null)
+  }
+
+  function isSelected(date: number, month: number, year: number) {
+    return typeof value === "object" && value instanceof Date
+      ? value.getDate() === date &&
+          value.getMonth() === month &&
+          value.getFullYear() === year
+      : false
   }
 
   return (
@@ -234,6 +253,8 @@ const SingleDatePicker: React.FC<Props> = ({
                     date={i}
                     isToday={isToday}
                     isSun={isSun}
+                    selected={isSelected(i, currentMonth, currentYear)}
+                    onClick={() => setValue(currentYear, currentMonth, i)}
                   />
                 )
                 key++

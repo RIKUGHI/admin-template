@@ -5,6 +5,8 @@ interface DateItemProps {
   isToday?: boolean
   isSun?: boolean
   disabled?: boolean
+  selected?: boolean
+  onClick?: () => void
 }
 
 const DateItem: React.FC<DateItemProps> = ({
@@ -12,21 +14,26 @@ const DateItem: React.FC<DateItemProps> = ({
   isToday,
   isSun,
   disabled,
+  selected,
+  onClick,
 }) => {
   return (
     <button
       className={clsx(
         "flex h-10 w-10 items-center justify-center rounded-lg font-semibold",
-        isToday
+        selected
+          ? "bg-green-600 text-white"
+          : isToday
           ? "text-green-600"
           : disabled
           ? isSun
             ? "text-red-300"
             : "text-gray-300"
           : isSun && "text-red-600",
-        !disabled && "hover:bg-green-600 hover:text-white"
+        !disabled && !selected && "hover:bg-green-600 hover:text-white"
       )}
       disabled={disabled}
+      onClick={onClick}
     >
       {date}
     </button>

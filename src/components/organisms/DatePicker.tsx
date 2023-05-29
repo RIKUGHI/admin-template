@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { FC, useEffect, useState } from "react"
 import {
   DatePickerNavigationType,
+  DateValueType,
   IdDatePickerState,
   SingleDatePicker,
 } from "../molecules"
@@ -12,6 +13,8 @@ interface Props {
   /** can be used if useRange is true. */
   showShortcuts?: boolean
   showFooter?: boolean
+  value?: DateValueType
+  onChange?: (v: DateValueType) => void
 }
 
 const DatePicker: FC<Props> = ({
@@ -19,20 +22,51 @@ const DatePicker: FC<Props> = ({
   useRange,
   showShortcuts,
   showFooter,
+  value,
+  onChange,
 }) => {
-  const [date1, setDate1] = useState(new Date())
+  if (useRange) {
+  }
+
+  // adjust date if value is not null
+  const [date1, setDate1] = useState<Date>(
+    typeof value === "object" && value instanceof Date ? value : new Date()
+  )
   const [currentMonth1, setCurrentMonth1] = useState(date1.getMonth())
   const [currentYear1, setCurrentYear1] = useState(date1.getFullYear())
 
-  const [date2, setDate2] = useState(new Date())
+  const [date2, setDate2] = useState<Date>(
+    new Date(currentYear1, currentMonth1 + 1)
+  )
   const [currentMonth2, setCurrentMonth2] = useState(date2.getMonth())
   const [currentYear2, setCurrentYear2] = useState(date2.getFullYear())
 
   useEffect(() => {
-    console.log("rendered full datepicker")
+    const date = new Date()
+    const a = new Date("2023-05-30 00:00:00").toISOString()
+    const b = new Date(2023, 4, 29)
+    const c = new Date("05/29/2023")
+    const d = new Date("2023-05-29")
+    const e = new Date("2023/05/29")
+    const f = new Date("May 29 2023")
+    const g = new Date("MAY, 20, 2023")
 
-    // add 1 month for first mounted
-    if (!asSingle) handlePrevNextMonth("NEXT", currentMonth1)
+    // date.setHours(0, 0, 0, 0)
+    // console.log("=========================")
+    // console.log({
+    //   date,
+    //   a: { before: a, after: new Date(a) },
+    //   b,
+    //   c,
+    //   d,
+    //   e,
+    //   f,
+    //   g,
+    // })
+
+    // d.setHours(0, 0, 0, 0)
+
+    console.log("rendered full datepicker")
   }, [])
 
   function handleSetCurrentMonth(
@@ -109,19 +143,13 @@ const DatePicker: FC<Props> = ({
     month: number
   ) {
     if (type === "PREV") {
-      const date = new Date(
-        year,
-        month <= currentMonth1 ? month - 1 : currentMonth1
-      )
+      const date = new Date(year, month - 1)
 
       setDate1(date)
       setCurrentMonth1(date.getMonth())
       setCurrentYear1(date.getFullYear())
     } else {
-      const date = new Date(
-        year,
-        month >= currentMonth2 ? month + 1 : currentMonth2
-      )
+      const date = new Date(year, month + 1)
 
       setDate2(date)
       setCurrentMonth2(date.getMonth())
@@ -129,11 +157,17 @@ const DatePicker: FC<Props> = ({
     }
   }
 
+  function handleSetValue(year: number, month: number, date: number) {
+    if (onChange) onChange(new Date(year, month, date))
+  }
+
   return (
     <div className="relative mb-10">
       <input
         type="text"
         className="block h-9 w-full rounded-md border border-gray-300 bg-gray-50 p-2 text-sm transition focus:border-green-500 focus:ring-green-500"
+        value="bersapi"
+        readOnly
       />
       <div className="absolute z-10 mt-1.5 flex flex-col rounded-md border border-gray-300 bg-white shadow-md lg:flex-row">
         {useRange && showShortcuts && (
@@ -152,14 +186,16 @@ const DatePicker: FC<Props> = ({
           </div>
         )}
         <div className="flex flex-col">
-          <div className="flex divide-x divide-gray-200">
+          <div className="flex flex-col divide-x divide-gray-200 md:flex-row">
             <SingleDatePicker
               id="datePicker1"
               date={date1}
               currentMonth={currentMonth1}
               currentYear={currentYear1}
+              value={value}
               setCurrentMonth={handleSetCurrentMonth}
               setCurrentYear={handleSetCurrentYear}
+              setValue={handleSetValue}
             />
             {!asSingle && (
               <SingleDatePicker
@@ -167,8 +203,10 @@ const DatePicker: FC<Props> = ({
                 date={date2}
                 currentMonth={currentMonth2}
                 currentYear={currentYear2}
+                value={value}
                 setCurrentMonth={handleSetCurrentMonth}
                 setCurrentYear={handleSetCurrentYear}
+                setValue={handleSetValue}
               />
             )}
           </div>
