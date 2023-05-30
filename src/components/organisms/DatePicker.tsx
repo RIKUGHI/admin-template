@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import { FC, useEffect, useRef, useState } from "react"
 import {
-  DatePickerNavigationType,
   DateValueType,
   IdDatePickerState,
   SingleDatePicker,
@@ -86,17 +85,12 @@ const DatePicker: FC<Props> = ({
       // adjust selected
       setSelected(oriValue)
 
-      // adjust datePicker1
       const resetDate1 = oriValue instanceof Date ? oriValue : new Date()
-      setDate1(resetDate1)
-      setCurrentMonth1(resetDate1.getMonth())
-      setCurrentYear1(resetDate1.getFullYear())
+      adjustDatePicker1(resetDate1)
 
       if (!asSingle) {
-        handlePrevNextMonth(
-          "NEXT",
-          resetDate1.getFullYear(),
-          resetDate1.getMonth()
+        adjustDatePicker2(
+          new Date(resetDate1.getFullYear(), resetDate1.getMonth() + 1)
         )
       }
     }
@@ -129,7 +123,7 @@ const DatePicker: FC<Props> = ({
         !asSingle &&
         new Date(year, month) >= new Date(currentYear2, currentMonth2)
       )
-        handlePrevNextMonth("NEXT", currentYear2, month)
+        adjustDatePicker2(new Date(year, month + 1))
     }
 
     if (idComp === "datePicker2") {
@@ -139,7 +133,7 @@ const DatePicker: FC<Props> = ({
         !asSingle &&
         new Date(year, month) <= new Date(currentYear1, currentMonth1)
       )
-        handlePrevNextMonth("PREV", currentYear1, month)
+        adjustDatePicker1(new Date(year, month - 1))
     }
   }
 
@@ -155,7 +149,7 @@ const DatePicker: FC<Props> = ({
         !asSingle &&
         new Date(year, month) >= new Date(currentYear2, currentMonth2)
       )
-        handlePrevNextYear("NEXT", year, month)
+        adjustDatePicker2(new Date(year, month + 1))
     }
 
     if (idComp === "datePicker2") {
@@ -165,48 +159,30 @@ const DatePicker: FC<Props> = ({
         !asSingle &&
         new Date(year, month) <= new Date(currentYear1, currentMonth1)
       )
-        handlePrevNextYear("PREV", year, month)
+        adjustDatePicker1(new Date(year, month - 1))
     }
   }
 
-  function handlePrevNextMonth(
-    type: DatePickerNavigationType,
-    year: number,
-    month: number
-  ) {
-    if (type === "PREV") {
-      const date = new Date(year, month - 1)
-
-      setDate1(date)
-      setCurrentMonth1(date.getMonth())
-      setCurrentYear1(date.getFullYear())
-    } else {
-      const date = new Date(year, month + 1)
-
-      setDate2(date)
-      setCurrentMonth2(date.getMonth())
-      setCurrentYear2(date.getFullYear())
-    }
+  /**
+   * Adjust DatePicker1
+   * @param {Date} d - date from datePicker2 / oriValue(if exist) / today
+   * @return {void}
+   */
+  function adjustDatePicker1(d: Date): void {
+    setDate1(d)
+    setCurrentMonth1(d.getMonth())
+    setCurrentYear1(d.getFullYear())
   }
 
-  function handlePrevNextYear(
-    type: DatePickerNavigationType,
-    year: number,
-    month: number
-  ) {
-    if (type === "PREV") {
-      const date = new Date(year, month - 1)
-
-      setDate1(date)
-      setCurrentMonth1(date.getMonth())
-      setCurrentYear1(date.getFullYear())
-    } else {
-      const date = new Date(year, month + 1)
-
-      setDate2(date)
-      setCurrentMonth2(date.getMonth())
-      setCurrentYear2(date.getFullYear())
-    }
+  /**
+   * Adjust DatePicker2
+   * @param {Date} d - date from datePicker1
+   * @return {void}
+   */
+  function adjustDatePicker2(d: Date): void {
+    setDate2(d)
+    setCurrentMonth2(d.getMonth())
+    setCurrentYear2(d.getFullYear())
   }
 
   function handleSetSelected(v: Date) {
