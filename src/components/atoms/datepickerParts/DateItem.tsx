@@ -30,9 +30,9 @@ const DateItem: React.FC<DateItemProps> = ({
             ? "text-red-300"
             : "text-gray-300"
           : isSun && "text-red-600",
-        !disabled && !selected && "hover:bg-green-600 hover:text-white"
+        !disabled && !selected && "hover:bg-green-600 hover:text-white",
+        disabled && "hover:bg-green-600/70 hover:text-white/70"
       )}
-      disabled={disabled}
       onClick={onClick}
     >
       {date}

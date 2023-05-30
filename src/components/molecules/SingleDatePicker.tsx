@@ -24,7 +24,7 @@ interface Props {
   date: Date
   currentMonth: number
   currentYear: number
-  value?: DateValueType
+  selected?: DateValueType
   setCurrentMonth: (
     month: number,
     year: number,
@@ -35,7 +35,7 @@ interface Props {
     month: number,
     idComp: IdDatePickerState
   ) => void
-  setValue: (v: Date) => void
+  setSelected: (v: Date) => void
 }
 
 const SingleDatePicker: React.FC<Props> = ({
@@ -43,10 +43,10 @@ const SingleDatePicker: React.FC<Props> = ({
   date,
   currentMonth,
   currentYear,
-  value,
+  selected,
   setCurrentMonth,
   setCurrentYear,
-  setValue,
+  setSelected,
 }) => {
   const days = ["Su", "Mo", "Tu", "We", "Th", "Fri", "Sa"]
   const months = [
@@ -93,7 +93,10 @@ const SingleDatePicker: React.FC<Props> = ({
     setActiveTab((prev) => (prev === v ? null : v))
   }
 
-  function handlePrevNext(type: DatePickerNavigationType) {
+  function handlePrevNext(
+    type: DatePickerNavigationType,
+    cb?: (year: number, month: number) => void
+  ) {
     if (!activeTab) {
       const newCurrentMonth = currentMonth + (type === "PREV" ? -1 : 1)
 
@@ -106,8 +109,12 @@ const SingleDatePicker: React.FC<Props> = ({
 
         setCurrentMonth(newDate.getMonth(), newDate.getFullYear(), id)
         setCurrentYear(newDate.getFullYear(), newDate.getMonth(), id)
+
+        if (cb) cb(newDate.getFullYear(), newDate.getMonth())
       } else {
         setCurrentMonth(newCurrentMonth, currentYear, id)
+
+        if (cb) cb(currentYear, newCurrentMonth)
       }
     }
 
@@ -130,10 +137,10 @@ const SingleDatePicker: React.FC<Props> = ({
   }
 
   function isSelected(date: number, month: number, year: number) {
-    return typeof value === "object" && value instanceof Date
-      ? value.getDate() === date &&
-          value.getMonth() === month &&
-          value.getFullYear() === year
+    return selected instanceof Date
+      ? selected.getDate() === date &&
+          selected.getMonth() === month &&
+          selected.getFullYear() === year
       : false
   }
 
@@ -232,7 +239,17 @@ const SingleDatePicker: React.FC<Props> = ({
                 let isSun = day === 0
 
                 dateComps.push(
-                  <DateItem key={key} date={lostDate} isSun={isSun} disabled />
+                  <DateItem
+                    key={key}
+                    date={lostDate}
+                    isSun={isSun}
+                    disabled
+                    onClick={() =>
+                      handlePrevNext("PREV", (year, month) => {
+                        setSelected(new Date(year, month, lostDate))
+                      })
+                    }
+                  />
                 )
                 key++
               }
@@ -243,7 +260,7 @@ const SingleDatePicker: React.FC<Props> = ({
 
                 let isSun = day === 0
                 let isToday =
-                  i === date.getDate() &&
+                  i === new Date().getDate() &&
                   currentMonth === new Date().getMonth() &&
                   currentYear === new Date().getFullYear()
 
@@ -254,7 +271,9 @@ const SingleDatePicker: React.FC<Props> = ({
                     isToday={isToday}
                     isSun={isSun}
                     selected={isSelected(i, currentMonth, currentYear)}
-                    onClick={() => setValue(new Date(currentYear, currentMonth, i))}
+                    onClick={() =>
+                      setSelected(new Date(currentYear, currentMonth, i))
+                    }
                   />
                 )
                 key++
@@ -262,8 +281,19 @@ const SingleDatePicker: React.FC<Props> = ({
 
               //getting first dates of next month
               for (let i = lastDayofMonth; i < 6; i++) {
+                const date = i - lastDayofMonth + 1
+
                 dateComps.push(
-                  <DateItem key={key} date={i - lastDayofMonth + 1} disabled />
+                  <DateItem
+                    key={key}
+                    date={date}
+                    disabled
+                    onClick={() =>
+                      handlePrevNext("NEXT", (year, month) => {
+                        setSelected(new Date(year, month, date))
+                      })
+                    }
+                  />
                 )
                 key++
               }
