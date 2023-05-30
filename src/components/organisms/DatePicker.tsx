@@ -25,8 +25,18 @@ const DatePicker: FC<Props> = ({
   value,
   onChange,
 }) => {
+  if (typeof value !== "object") {
+    console.error("The value must be of type Date or DateRange")
+  }
+
   if (useRange) {
   }
+
+  const [inputValue, setInputValue] = useState(
+    typeof value === "object" && value instanceof Date
+      ? formatDateToYYYYMMDD(value)
+      : ""
+  )
 
   // adjust date if value is not null
   const [date1, setDate1] = useState<Date>(
@@ -158,7 +168,20 @@ const DatePicker: FC<Props> = ({
   }
 
   function handleSetValue(v: Date) {
-    if (onChange) onChange(v)
+    if (onChange) {
+      setInputValue(formatDateToYYYYMMDD(v))
+      onChange(v)
+    }
+  }
+
+  function formatDateToYYYYMMDD(v: Date) {
+    return (
+      v.getFullYear() +
+      "-" +
+      String(v.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(v.getDate()).padStart(2, "0")
+    )
   }
 
   return (
@@ -166,7 +189,7 @@ const DatePicker: FC<Props> = ({
       <input
         type="text"
         className="block h-9 w-full rounded-md border border-gray-300 bg-gray-50 p-2 text-sm transition focus:border-green-500 focus:ring-green-500"
-        value="bersapi"
+        value={inputValue}
         readOnly
       />
       <div className="absolute z-10 mt-1.5 flex flex-col rounded-md border border-gray-300 bg-white shadow-md lg:flex-row">
