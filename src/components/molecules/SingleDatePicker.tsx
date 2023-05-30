@@ -21,7 +21,6 @@ export type DateValueType = NullableDate | DateRange
 interface Props {
   /** indications for the component itself */
   id: IdDatePickerState
-  date: Date
   currentMonth: number
   currentYear: number
   selected?: DateValueType
@@ -40,7 +39,6 @@ interface Props {
 
 const SingleDatePicker: React.FC<Props> = ({
   id,
-  date,
   currentMonth,
   currentYear,
   selected,

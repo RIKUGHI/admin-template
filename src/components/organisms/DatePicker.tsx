@@ -87,10 +87,18 @@ const DatePicker: FC<Props> = ({
       setSelected(oriValue)
 
       // adjust datePicker1
-      const resetDate = oriValue instanceof Date ? oriValue : new Date()
-      setDate1(resetDate)
-      setCurrentMonth1(resetDate.getMonth())
-      setCurrentYear1(resetDate.getFullYear())
+      const resetDate1 = oriValue instanceof Date ? oriValue : new Date()
+      setDate1(resetDate1)
+      setCurrentMonth1(resetDate1.getMonth())
+      setCurrentYear1(resetDate1.getFullYear())
+
+      if (!asSingle) {
+        handlePrevNextMonth(
+          "NEXT",
+          resetDate1.getFullYear(),
+          resetDate1.getMonth()
+        )
+      }
     }
 
     window.onmousedown = (e) => {
@@ -121,7 +129,7 @@ const DatePicker: FC<Props> = ({
         !asSingle &&
         new Date(year, month) >= new Date(currentYear2, currentMonth2)
       )
-        handlePrevNextMonth("NEXT", month)
+        handlePrevNextMonth("NEXT", currentYear2, month)
     }
 
     if (idComp === "datePicker2") {
@@ -131,7 +139,7 @@ const DatePicker: FC<Props> = ({
         !asSingle &&
         new Date(year, month) <= new Date(currentYear1, currentMonth1)
       )
-        handlePrevNextMonth("PREV", month)
+        handlePrevNextMonth("PREV", currentYear1, month)
     }
   }
 
@@ -161,15 +169,19 @@ const DatePicker: FC<Props> = ({
     }
   }
 
-  function handlePrevNextMonth(type: DatePickerNavigationType, month: number) {
+  function handlePrevNextMonth(
+    type: DatePickerNavigationType,
+    year: number,
+    month: number
+  ) {
     if (type === "PREV") {
-      const date = new Date(currentYear1, month - 1)
+      const date = new Date(year, month - 1)
 
       setDate1(date)
       setCurrentMonth1(date.getMonth())
       setCurrentYear1(date.getFullYear())
     } else {
-      const date = new Date(currentYear2, month + 1)
+      const date = new Date(year, month + 1)
 
       setDate2(date)
       setCurrentMonth2(date.getMonth())
@@ -264,7 +276,6 @@ const DatePicker: FC<Props> = ({
             <div className="flex flex-col divide-x divide-gray-200 md:flex-row">
               <SingleDatePicker
                 id="datePicker1"
-                date={date1}
                 currentMonth={currentMonth1}
                 currentYear={currentYear1}
                 selected={selected}
@@ -275,7 +286,6 @@ const DatePicker: FC<Props> = ({
               {!asSingle && (
                 <SingleDatePicker
                   id="datePicker2"
-                  date={date2}
                   currentMonth={currentMonth2}
                   currentYear={currentYear2}
                   selected={selected}
