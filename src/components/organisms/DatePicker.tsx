@@ -12,7 +12,7 @@ interface Props {
   /** can be used if useRange is true. */
   showShortcuts?: boolean
   showFooter?: boolean
-  value?: DateValueType
+  value: DateValueType
   onChange: (v: DateValueType) => void
 }
 
@@ -21,14 +21,20 @@ const DatePicker: FC<Props> = ({
   useRange,
   showShortcuts,
   showFooter,
-  value: oriValue = null,
+  value: oriValue,
   onChange,
 }) => {
-  if (typeof oriValue !== "object") {
-    console.error("The value must be of type Date or DateRange or null")
-  }
+  if (typeof oriValue === "undefined")
+    throw new Error(
+      "The value is required and must be of type Date or DateRange or Null"
+    )
 
   if (useRange) {
+    if (!isDateRange(oriValue))
+      throw new Error("The value structure must be of type DateRange")
+  } else {
+    if (!isNullableDate(oriValue))
+      throw new Error("The value structure must be of type Date or Null")
   }
 
   const datePickerContainerRef = useRef<HTMLDivElement>(null)
@@ -77,6 +83,21 @@ const DatePicker: FC<Props> = ({
 
     console.log("rendered full datepicker")
   }, [])
+
+  function isNullableDate(oriValue: DateValueType) {
+    return oriValue === null || oriValue instanceof Date
+  }
+
+  function isDateRange(oriValue: DateValueType) {
+    return (
+      oriValue !== null &&
+      typeof oriValue === "object" &&
+      "startDate" in oriValue &&
+      isNullableDate(oriValue.startDate) &&
+      "endDate" in oriValue &&
+      isNullableDate(oriValue.endDate)
+    )
+  }
 
   function handleFocus() {
     setOpenDatePicker(true)
@@ -164,7 +185,6 @@ const DatePicker: FC<Props> = ({
   }
 
   /**
-   * Adjust DatePicker1
    * @param {Date} d - date from datePicker2 / oriValue(if exist) / today
    * @return {void}
    */
@@ -175,7 +195,6 @@ const DatePicker: FC<Props> = ({
   }
 
   /**
-   * Adjust DatePicker2
    * @param {Date} d - date from datePicker1
    * @return {void}
    */
