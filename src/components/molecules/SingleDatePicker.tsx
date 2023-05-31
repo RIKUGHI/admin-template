@@ -3,6 +3,7 @@ import {
   DateItem,
   MonthYearSwitcher,
   PrevNextButton,
+  SelectedState,
 } from "../atoms/datepickerParts"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import clsx from "clsx"
@@ -134,12 +135,52 @@ const SingleDatePicker: React.FC<Props> = ({
     setActiveTab(null)
   }
 
-  function isSelected(date: number, month: number, year: number) {
-    return selected instanceof Date
-      ? selected.getDate() === date &&
-          selected.getMonth() === month &&
-          selected.getFullYear() === year
-      : false
+  function getSelectedType(d: Date): SelectedState {
+    if (selected instanceof Date)
+      return isSameDate(selected, d) ? "SINGLE" : undefined
+
+    if (
+      selected !== null &&
+      typeof selected === "object" &&
+      selected.startDate instanceof Date &&
+      selected.endDate instanceof Date
+    ) {
+      const { startDate, endDate } = selected
+
+      if (isSameDate(startDate, d) && isSameDate(endDate, d)) return "SINGLE"
+
+      if (isSameDate(startDate, d)) {
+        return "START"
+      } else if (isSameDate(endDate, d)) {
+        return "END"
+      }
+    }
+
+    return undefined
+  }
+
+  function isPreSelected(d: Date) {
+    if (selected instanceof Date) return false
+
+    if (
+      selected !== null &&
+      typeof selected === "object" &&
+      selected.startDate instanceof Date &&
+      selected.endDate instanceof Date &&
+      selected.startDate < d &&
+      d < selected.endDate
+    )
+      return true
+
+    return false
+  }
+
+  function isSameDate(date1: Date, date2: Date) {
+    return (
+      date1.getDate() === date2.getDate() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getFullYear() === date2.getFullYear()
+    )
   }
 
   return (
@@ -268,7 +309,12 @@ const SingleDatePicker: React.FC<Props> = ({
                     date={i}
                     isToday={isToday}
                     isSun={isSun}
-                    selected={isSelected(i, currentMonth, currentYear)}
+                    preSelected={isPreSelected(
+                      new Date(currentYear, currentMonth, i)
+                    )}
+                    selectedType={getSelectedType(
+                      new Date(currentYear, currentMonth, i)
+                    )}
                     onClick={() =>
                       setSelected(new Date(currentYear, currentMonth, i))
                     }
@@ -298,16 +344,6 @@ const SingleDatePicker: React.FC<Props> = ({
 
               return dateComps
             })()}
-
-            {/* <span className="flex h-10 w-10 items-center justify-center rounded-l-lg bg-green-600 font-semibold text-white">
-          18
-        </span>
-        <span className="flex h-10 w-10 items-center justify-center rounded-none bg-green-50 font-semibold text-green-600">
-          19
-        </span>
-        <span className="flex h-10 w-10 items-center justify-center rounded-none rounded-r-md bg-green-600 font-semibold text-white">
-          20
-        </span> */}
           </>
         )}
       </div>

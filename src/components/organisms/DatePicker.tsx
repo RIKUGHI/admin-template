@@ -40,7 +40,7 @@ const DatePicker: FC<Props> = ({
   const datePickerContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [openDatePicker, setOpenDatePicker] = useState(false)
+  const [openDatePicker, setOpenDatePicker] = useState(true)
   const [selected, setSelected] = useState<DateValueType>(oriValue)
 
   // adjust date
@@ -205,12 +205,15 @@ const DatePicker: FC<Props> = ({
   }
 
   function handleSetSelected(v: Date) {
-    if (showFooter) {
-      setSelected(v)
+    if (useRange) {
     } else {
-      setSelected(v)
-      onChange(v)
-      inputRef.current?.blur()
+      if (showFooter) {
+        setSelected(v)
+      } else {
+        setSelected(v)
+        onChange(v)
+        inputRef.current?.blur()
+      }
     }
   }
 
@@ -244,8 +247,8 @@ const DatePicker: FC<Props> = ({
         className="block h-9 w-full rounded-md border border-gray-300 bg-gray-50 p-2 text-sm transition focus:border-green-500 focus:ring-green-500"
         value={oriValue instanceof Date ? formatDateToYYYYMMDD(oriValue) : ""}
         readOnly
-        onFocus={handleFocus}
-        onBlur={handleBlur}
+        // onFocus={handleFocus}
+        // onBlur={handleBlur}
       />
       {openDatePicker && (
         <div

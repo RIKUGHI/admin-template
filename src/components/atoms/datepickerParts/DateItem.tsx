@@ -1,11 +1,13 @@
 import clsx from "clsx"
 
+export type SelectedState = "START" | "SINGLE" | "END" | undefined
 interface DateItemProps {
   date: number
   isToday?: boolean
   isSun?: boolean
   disabled?: boolean
-  selected?: boolean
+  preSelected?: boolean
+  selectedType?: SelectedState
   onClick?: () => void
 }
 
@@ -14,24 +16,34 @@ const DateItem: React.FC<DateItemProps> = ({
   isToday,
   isSun,
   disabled,
-  selected,
+  preSelected,
+  selectedType,
   onClick,
 }) => {
   return (
     <button
       className={clsx(
-        "flex h-10 w-10 items-center justify-center rounded-lg font-semibold",
-        selected
-          ? "bg-green-600 text-white"
-          : isToday
+        "flex h-10 w-10 items-center justify-center font-semibold",
+        selectedType
+          ? [
+              "bg-green-600 text-white",
+              selectedType === "START" && "rounded-l-lg",
+              selectedType === "SINGLE" && "rounded-lg",
+              selectedType === "END" && "rounded-r-lg",
+            ]
+          : isToday || preSelected
           ? "text-green-600"
           : disabled
           ? isSun
             ? "text-red-300"
             : "text-gray-300"
           : isSun && "text-red-600",
-        !disabled && !selected && "hover:bg-green-600 hover:text-white",
-        disabled && "hover:bg-green-600/70 hover:text-white/70"
+        preSelected && "bg-green-50",
+        !disabled &&
+          !selectedType &&
+          !preSelected &&
+          "rounded-lg hover:bg-green-600 hover:text-white",
+        disabled && "rounded-lg hover:bg-green-600/70 hover:text-white/70"
       )}
       onClick={onClick}
     >
