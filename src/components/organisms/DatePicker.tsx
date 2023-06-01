@@ -1,6 +1,6 @@
-import clsx from "clsx"
 import { FC, useEffect, useRef, useState } from "react"
-import { NullableDate, IdDatePickerState, SingleDatePicker } from "../molecules"
+import { formatDateToYYYYMMDD, isSameDate } from "../../utilities/dateUtils"
+import { IdDatePickerState, NullableDate, SingleDatePicker } from "../molecules"
 
 interface Props {
   defaultValue?: NullableDate
@@ -27,32 +27,15 @@ const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
   const [currentYear, setCurrentYear] = useState(date.getFullYear())
 
   useEffect(() => {
-    // const date = new Date() // has hours
-    // const a = new Date("2023-05-30 00:00:00").toISOString()
-    // const b = new Date(2023, 4, 29)
-    // const c = new Date("05/29/2023")
-    // const d = new Date("2023-05-29") // has hours
-    // const e = new Date("2023/05/29")
-    // const f = new Date("May 29 2023")
-    // const g = new Date("MAY, 20, 2023")
+    if (value && selected && !isSameDate(value, selected)) {
+      const adjustDate = value
 
-    // date.setHours(0, 0, 0, 0)
-    // console.log("=========================")
-    // console.log({
-    //   date,
-    //   a: { before: a, after: new Date(a) },
-    //   b,
-    //   c,
-    //   d,
-    //   e,
-    //   f,
-    //   g,
-    // })
-
-    // d.setHours(0, 0, 0, 0)
-
-    console.log("rendered full datepicker")
-  }, [])
+      setSelected(adjustDate)
+      setDate(adjustDate)
+      setCurrentMonth(adjustDate.getMonth())
+      setCurrentYear(adjustDate.getFullYear())
+    }
+  }, [value])
 
   function isNullableDate(oriValue: NullableDate) {
     return oriValue === null || oriValue instanceof Date
@@ -91,20 +74,12 @@ const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
     setCurrentYear(year)
   }
 
-  function handleSetSelected(v: Date) {
-    setSelected(v)
-    if (onChange) onChange(v)
+  function handleSetSelected(d: Date) {
+    if (!selected || (selected && !isSameDate(selected, d))) {
+      setSelected(d)
+      if (onChange) onChange(d)
+    }
     inputRef.current?.blur()
-  }
-
-  function formatDateToYYYYMMDD(v: Date) {
-    return (
-      v.getFullYear() +
-      "-" +
-      String(v.getMonth() + 1).padStart(2, "0") +
-      "-" +
-      String(v.getDate()).padStart(2, "0")
-    )
   }
 
   return (
