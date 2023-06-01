@@ -9,8 +9,13 @@ interface Props {
 }
 
 const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
-  if (value && !isNullableDate(value))
-    throw new Error("The value structure must be of type Date or Null")
+  if (
+    (defaultValue && !isNullableDate(defaultValue)) ||
+    (value && !isNullableDate(value))
+  )
+    throw new Error(
+      "The defaultValue or value structure must be of type NullableDate"
+    )
 
   const datePickerContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
