@@ -5,33 +5,43 @@ import {
   NullableDate,
   SingleDatePicker,
 } from "../molecules"
+import {
+  countDatesInRange,
+  formatDateToYYYYMMDD,
+} from "../../utilities/dateUtils"
 
 interface Props {
   showShortcuts?: boolean
   showFooter?: boolean
+  defaultValue?: DateRangeType
   value?: DateRangeType
   onChange?: (v: DateRangeType) => void
 }
 
 const DateRangePicker: React.FC<Props> = ({
+  defaultValue,
   value,
   showShortcuts,
   showFooter,
   onChange,
 }) => {
-  if (value && !isDateRange(value))
+  if (
+    defaultValue === null ||
+    (defaultValue && !isDateRange(defaultValue)) ||
+    value === null ||
+    (value && !isDateRange(value))
+  )
     throw new Error("The value structure must be of type DateRangeType")
 
   const datePickerContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [openDatePicker, setOpenDatePicker] = useState(true)
+  const [openDatePicker, setOpenDatePicker] = useState(false)
   const [datePickerClickCount, setDatePickerCount] = useState(1)
   const [selected, setSelected] = useState<DateRangeType>(
-    value ?? { startDate: null, endDate: null }
+    value ? value : defaultValue ?? { startDate: null, endDate: null }
   )
 
-  // adjust date
   const [date1, setDate1] = useState<Date>(new Date())
   const [currentMonth1, setCurrentMonth1] = useState(date1.getMonth())
   const [currentYear1, setCurrentYear1] = useState(date1.getFullYear())
@@ -152,35 +162,39 @@ const DateRangePicker: React.FC<Props> = ({
   }
 
   function handleSetSelected(d: Date) {
+    let newDateRange: DateRangeType = {
+      startDate: datePickerClickCount === 1 ? d : selected.startDate,
+      endDate: datePickerClickCount === 2 ? d : null,
+    }
+
+    // re-sort
+    if (
+      datePickerClickCount === 2 &&
+      newDateRange.startDate &&
+      newDateRange.endDate &&
+      newDateRange.endDate < newDateRange.startDate
+    ) {
+      newDateRange = {
+        startDate: newDateRange.endDate,
+        endDate: newDateRange.startDate,
+      }
+    }
+
     if (showFooter) {
-      // setSelected(v)
+      setSelected(newDateRange)
+
+      if (datePickerClickCount === 2) setDatePickerCount(1)
+      else setDatePickerCount(2)
     } else {
-      let newDateRange: DateRangeType = {
-        startDate: datePickerClickCount === 1 ? d : selected.startDate,
-        endDate: datePickerClickCount === 2 ? d : null,
-      }
-
-      // re-sort
-      if (
-        datePickerClickCount === 2 &&
-        newDateRange.startDate &&
-        newDateRange.endDate &&
-        newDateRange.endDate < newDateRange.startDate
-      ) {
-        newDateRange = {
-          startDate: newDateRange.endDate,
-          endDate: newDateRange.startDate,
-        }
-      }
-
       setSelected(newDateRange)
 
       if (onChange) onChange(newDateRange)
 
-      if (datePickerClickCount === 2) setDatePickerCount(1)
-      else setDatePickerCount(2)
+      if (datePickerClickCount === 2) {
+        setDatePickerCount(1)
 
-      inputRef.current?.blur()
+        inputRef.current?.blur()
+      } else setDatePickerCount(2)
     }
   }
 
@@ -196,14 +210,14 @@ const DateRangePicker: React.FC<Props> = ({
     }
   }
 
-  function formatDateToYYYYMMDD(v: Date) {
-    return (
-      v.getFullYear() +
-      "-" +
-      String(v.getMonth() + 1).padStart(2, "0") +
-      "-" +
-      String(v.getDate()).padStart(2, "0")
-    )
+  let complateValue = []
+
+  if (value && value.startDate) {
+    complateValue.push(formatDateToYYYYMMDD(value.startDate))
+  }
+
+  if (value && value.endDate) {
+    complateValue.push(formatDateToYYYYMMDD(value.endDate))
   }
 
   return (
@@ -212,10 +226,10 @@ const DateRangePicker: React.FC<Props> = ({
         ref={inputRef}
         type="text"
         className="block h-9 w-full rounded-md border border-gray-300 bg-gray-50 p-2 text-sm transition focus:border-green-500 focus:ring-green-500"
-        value={value instanceof Date ? formatDateToYYYYMMDD(value) : ""}
+        value={complateValue.join(" - ")}
         readOnly
-        // onFocus={handleFocus}
-        // onBlur={handleBlur}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
       />
       {openDatePicker && (
         <div
@@ -263,16 +277,23 @@ const DateRangePicker: React.FC<Props> = ({
                 <div className="flex items-center space-x-5">
                   <div className="flex w-full items-center space-x-2 text-sm font-semibold md:w-auto">
                     <span className="flex-1 rounded-md bg-gray-100 p-2 text-center md:flex-none">
-                      18/02/2021
+                      {selected.startDate
+                        ? formatDateToYYYYMMDD(selected.startDate)
+                        : "YYYY-MM-DD"}
                     </span>
                     <span className="mt-0.5 h-0.5 w-3 bg-gray-400"></span>
                     <span className="flex-1 rounded-md bg-gray-100 p-2 text-center md:flex-none">
-                      18/03/2021
+                      {selected.endDate
+                        ? formatDateToYYYYMMDD(selected.endDate)
+                        : "YYYY-MM-DD"}
                     </span>
                   </div>
-                  <span className="hidden text-sm font-semibold md:block">
-                    30 days <span className="text-gray-400">selected</span>
-                  </span>
+                  {selected.startDate && selected.endDate && (
+                    <span className="hidden text-sm font-semibold md:block">
+                      {countDatesInRange(selected.startDate, selected.endDate)}{" "}
+                      days <span className="text-gray-400">selected</span>
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex space-x-2">

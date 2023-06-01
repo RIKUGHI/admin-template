@@ -7,6 +7,7 @@ import {
 } from "../atoms/datepickerParts"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import clsx from "clsx"
+import { isSameDate } from "../../utilities/dateUtils"
 
 export type IdDatePickerState = "datePicker1" | "datePicker2"
 export type DatePickerNavigationType = "PREV" | "NEXT"
@@ -170,14 +171,6 @@ const SingleDatePicker: React.FC<Props> = ({
       return true
 
     return false
-  }
-
-  function isSameDate(date1: Date, date2: Date) {
-    return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
-    )
   }
 
   return (
