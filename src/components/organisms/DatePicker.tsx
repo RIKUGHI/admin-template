@@ -3,11 +3,12 @@ import { FC, useEffect, useRef, useState } from "react"
 import { NullableDate, IdDatePickerState, SingleDatePicker } from "../molecules"
 
 interface Props {
+  defaultValue?: NullableDate
   value?: NullableDate
   onChange?: (v: NullableDate) => void
 }
 
-const DatePicker: FC<Props> = ({ value, onChange }) => {
+const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
   if (value && !isNullableDate(value))
     throw new Error("The value structure must be of type Date or Null")
 
@@ -15,24 +16,25 @@ const DatePicker: FC<Props> = ({ value, onChange }) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [openDatePicker, setOpenDatePicker] = useState(false)
-  const [selected, setSelected] = useState<NullableDate>(value ?? null)
+  const [selected, setSelected] = useState<NullableDate>(
+    value ? value : defaultValue ?? null
+  )
 
-  // adjust date
-  const [date1, setDate1] = useState<Date>(
+  const [date, setDate] = useState<Date>(
     selected instanceof Date ? selected : new Date()
   )
-  const [currentMonth1, setCurrentMonth1] = useState(date1.getMonth())
-  const [currentYear1, setCurrentYear1] = useState(date1.getFullYear())
+  const [currentMonth, setCurrentMonth] = useState(date.getMonth())
+  const [currentYear, setCurrentYear] = useState(date.getFullYear())
 
   useEffect(() => {
-    const date = new Date()
-    const a = new Date("2023-05-30 00:00:00").toISOString()
-    const b = new Date(2023, 4, 29)
-    const c = new Date("05/29/2023")
-    const d = new Date("2023-05-29")
-    const e = new Date("2023/05/29")
-    const f = new Date("May 29 2023")
-    const g = new Date("MAY, 20, 2023")
+    // const date = new Date() // has hours
+    // const a = new Date("2023-05-30 00:00:00").toISOString()
+    // const b = new Date(2023, 4, 29)
+    // const c = new Date("05/29/2023")
+    // const d = new Date("2023-05-29") // has hours
+    // const e = new Date("2023/05/29")
+    // const f = new Date("May 29 2023")
+    // const g = new Date("MAY, 20, 2023")
 
     // date.setHours(0, 0, 0, 0)
     // console.log("=========================")
@@ -78,7 +80,7 @@ const DatePicker: FC<Props> = ({ value, onChange }) => {
     year: number,
     idComp: IdDatePickerState
   ) {
-    setCurrentMonth1(month)
+    setCurrentMonth(month)
   }
 
   function handleSetCurrentYear(
@@ -86,7 +88,7 @@ const DatePicker: FC<Props> = ({ value, onChange }) => {
     month: number,
     idComp: IdDatePickerState
   ) {
-    setCurrentYear1(year)
+    setCurrentYear(year)
   }
 
   function handleSetSelected(v: Date) {
@@ -111,7 +113,7 @@ const DatePicker: FC<Props> = ({ value, onChange }) => {
         ref={inputRef}
         type="text"
         className="block h-9 w-full rounded-md border border-gray-300 bg-gray-50 p-2 text-sm transition focus:border-green-500 focus:ring-green-500"
-        value={value instanceof Date ? formatDateToYYYYMMDD(value) : ""}
+        value={selected instanceof Date ? formatDateToYYYYMMDD(selected) : ""}
         readOnly
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -123,8 +125,8 @@ const DatePicker: FC<Props> = ({ value, onChange }) => {
         >
           <SingleDatePicker
             id="datePicker1"
-            currentMonth={currentMonth1}
-            currentYear={currentYear1}
+            currentMonth={currentMonth}
+            currentYear={currentYear}
             selected={selected}
             setCurrentMonth={handleSetCurrentMonth}
             setCurrentYear={handleSetCurrentYear}
