@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from "react"
 import { formatDateToYYYYMMDD, isSameDate } from "../../utilities/dateUtils"
-import { IdDatePickerState, NullableDate, SingleDatePicker } from "../molecules"
+import { NullableDate, SingleDatePicker } from "../molecules"
 
 interface Props {
   defaultValue?: NullableDate
@@ -58,19 +58,11 @@ const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
     window.onmousedown = null
   }
 
-  function handleSetCurrentMonth(
-    month: number,
-    year: number,
-    idComp: IdDatePickerState
-  ) {
+  function handleSetCurrentMonth(month: number) {
     setCurrentMonth(month)
   }
 
-  function handleSetCurrentYear(
-    year: number,
-    month: number,
-    idComp: IdDatePickerState
-  ) {
+  function handleSetCurrentYear(year: number) {
     setCurrentYear(year)
   }
 
