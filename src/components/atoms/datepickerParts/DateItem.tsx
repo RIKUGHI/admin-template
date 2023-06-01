@@ -27,6 +27,8 @@ const DateItem: React.FC<DateItemProps> = ({
         selectedType
           ? [
               "bg-green-600 text-white",
+              (selectedType === "START" || selectedType === "END") &&
+                "hover:rounded-lg",
               selectedType === "START" && "rounded-l-lg",
               selectedType === "SINGLE" && "rounded-lg",
               selectedType === "END" && "rounded-r-lg",

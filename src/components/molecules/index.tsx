@@ -13,5 +13,6 @@ export {
   default as SingleDatePicker,
   type IdDatePickerState,
   type DatePickerNavigationType,
-  type DateValueType,
+  type NullableDate,
+  type DateRangeType,
 } from "./SingleDatePicker"

@@ -12,19 +12,18 @@ export type IdDatePickerState = "datePicker1" | "datePicker2"
 export type DatePickerNavigationType = "PREV" | "NEXT"
 type TabState = "MONTH" | "YEAR" | null
 
-type NullableDate = null | Date
-type DateRange = {
+export type NullableDate = null | Date
+export type DateRangeType = {
   startDate: NullableDate
   endDate: NullableDate
 }
-export type DateValueType = NullableDate | DateRange
 
 interface Props {
   /** indications for the component itself */
   id: IdDatePickerState
   currentMonth: number
   currentYear: number
-  selected?: DateValueType
+  selected?: NullableDate | DateRangeType
   setCurrentMonth: (
     month: number,
     year: number,
@@ -139,21 +138,19 @@ const SingleDatePicker: React.FC<Props> = ({
     if (selected instanceof Date)
       return isSameDate(selected, d) ? "SINGLE" : undefined
 
-    if (
-      selected !== null &&
-      typeof selected === "object" &&
-      selected.startDate instanceof Date &&
-      selected.endDate instanceof Date
-    ) {
+    if (selected !== null && typeof selected === "object") {
       const { startDate, endDate } = selected
 
-      if (isSameDate(startDate, d) && isSameDate(endDate, d)) return "SINGLE"
+      if (
+        startDate instanceof Date &&
+        endDate instanceof Date &&
+        isSameDate(startDate, d) &&
+        isSameDate(endDate, d)
+      )
+        return "SINGLE"
 
-      if (isSameDate(startDate, d)) {
-        return "START"
-      } else if (isSameDate(endDate, d)) {
-        return "END"
-      }
+      if (startDate instanceof Date && isSameDate(startDate, d)) return "START"
+      else if (endDate instanceof Date && isSameDate(endDate, d)) return "END"
     }
 
     return undefined
