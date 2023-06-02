@@ -53,11 +53,7 @@ const DateRangePicker: React.FC<Props> = ({
   const [currentYear1, setCurrentYear1] = useState(date1.getFullYear())
 
   const [date2, setDate2] = useState<Date>(
-    !selected.endDate ||
-      (currentMonth1 === selected.endDate.getMonth() &&
-        currentYear1 === selected.endDate.getFullYear())
-      ? new Date(currentYear1, currentMonth1 + 1)
-      : selected.endDate
+    getAdjustedDatePicker2Value(selected)
   )
   const [currentMonth2, setCurrentMonth2] = useState(date2.getMonth())
   const [currentYear2, setCurrentYear2] = useState(date2.getFullYear())
@@ -75,7 +71,7 @@ const DateRangePicker: React.FC<Props> = ({
   function handleFocus() {
     setOpenDatePicker(true)
 
-    // adjust for uncontrolled
+    // adjust for uncontrolled / controlled
     adjustDateRangePicker(selected)
 
     window.onmousedown = (e) => {
@@ -137,13 +133,17 @@ const DateRangePicker: React.FC<Props> = ({
   function adjustDateRangePicker(d: DateRangeType) {
     const adjustDate1 = d.startDate ?? new Date()
     adjustDatePicker1(adjustDate1)
-    adjustDatePicker2(
-      !d.endDate ||
-        (adjustDate1.getMonth() === d.endDate.getMonth() &&
-          adjustDate1.getFullYear() === d.endDate.getFullYear())
-        ? new Date(adjustDate1.getFullYear(), adjustDate1.getMonth() + 1)
-        : d.endDate
-    )
+    adjustDatePicker2(getAdjustedDatePicker2Value(d))
+  }
+
+  function getAdjustedDatePicker2Value(d: DateRangeType) {
+    const adjustDate = d.startDate ?? new Date()
+
+    return !d.endDate ||
+      (adjustDate.getMonth() === d.endDate.getMonth() &&
+        adjustDate.getFullYear() === d.endDate.getFullYear())
+      ? new Date(adjustDate.getFullYear(), adjustDate.getMonth() + 1)
+      : d.endDate
   }
 
   /**
