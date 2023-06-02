@@ -22,6 +22,7 @@ const DateItem: React.FC<DateItemProps> = ({
 }) => {
   return (
     <button
+      tabIndex={-1}
       className={clsx(
         "flex h-10 w-10 items-center justify-center font-semibold",
         selectedType

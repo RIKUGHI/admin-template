@@ -19,6 +19,7 @@ const MonthYearSwitcher: React.FC<Props> = ({
 }) => {
   return (
     <button
+      tabIndex={-1}
       className={clsx(
         "flex-1 rounded-md py-2 text-center text-sm font-semibold ",
         isNavigator

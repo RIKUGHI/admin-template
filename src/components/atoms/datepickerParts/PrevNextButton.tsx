@@ -14,6 +14,7 @@ const PrevNextButton: React.FC<Props> = ({
 }) => {
   return (
     <button
+      tabIndex={-1}
       className={clsx(
         "flex items-center justify-center rounded-full p-2",
         isYearNegative ? "text-gray-300" : "hover:bg-gray-50"

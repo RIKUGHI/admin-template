@@ -1,14 +1,15 @@
-import { useState, useRef, useEffect } from "react"
-import {
-  DateRangeType,
-  IdDatePickerState,
-  NullableDate,
-  SingleDatePicker,
-} from "../molecules"
+import clsx from "clsx"
+import { useEffect, useRef, useState } from "react"
 import {
   countDatesInRange,
   formatDateToYYYYMMDD,
+  isDateRange,
 } from "../../utilities/dateUtils"
+import {
+  DateRangeType,
+  IdDatePickerState,
+  SingleDatePicker,
+} from "../molecules"
 
 interface Props {
   showShortcuts?: boolean
@@ -39,51 +40,43 @@ const DateRangePicker: React.FC<Props> = ({
   const [openDatePicker, setOpenDatePicker] = useState(false)
   const [datePickerClickCount, setDatePickerCount] = useState(1)
   const [selected, setSelected] = useState<DateRangeType>(
-    value ? value : defaultValue ?? { startDate: null, endDate: null }
+    value
+      ? sortAndResetDateRange(value)
+      : defaultValue
+      ? sortAndResetDateRange(defaultValue)
+      : { startDate: null, endDate: null }
   )
+  const [inputValue, setInputValue] = useState<DateRangeType>(selected)
 
-  const [date1, setDate1] = useState<Date>(new Date())
+  const [date1, setDate1] = useState<Date>(selected.startDate ?? new Date())
   const [currentMonth1, setCurrentMonth1] = useState(date1.getMonth())
   const [currentYear1, setCurrentYear1] = useState(date1.getFullYear())
 
   const [date2, setDate2] = useState<Date>(
-    new Date(currentYear1, currentMonth1 + 1)
+    !selected.endDate ||
+      (currentMonth1 === selected.endDate.getMonth() &&
+        currentYear1 === selected.endDate.getFullYear())
+      ? new Date(currentYear1, currentMonth1 + 1)
+      : selected.endDate
   )
   const [currentMonth2, setCurrentMonth2] = useState(date2.getMonth())
   const [currentYear2, setCurrentYear2] = useState(date2.getFullYear())
 
   useEffect(() => {
-    console.log("rendered date-range-picker")
-  })
-
-  function isNullableDate(value: NullableDate) {
-    return value === null || value instanceof Date
-  }
-
-  function isDateRange(value: DateRangeType) {
-    return (
-      typeof value === "object" &&
-      "startDate" in value &&
-      isNullableDate(value.startDate) &&
-      "endDate" in value &&
-      isNullableDate(value.endDate)
-    )
-  }
+    // adjust for controlled
+    if (value) {
+      const sortedDateRange = sortAndResetDateRange(value)
+      setSelected(sortedDateRange)
+      setInputValue(sortedDateRange)
+      adjustDateRangePicker(sortedDateRange)
+    }
+  }, [value?.endDate])
 
   function handleFocus() {
     setOpenDatePicker(true)
 
-    if (showFooter) {
-      // adjust selected
-      // setSelected(value)
-
-      const resetDate1 = value instanceof Date ? value : new Date()
-      adjustDatePicker1(resetDate1)
-
-      adjustDatePicker2(
-        new Date(resetDate1.getFullYear(), resetDate1.getMonth() + 1)
-      )
-    }
+    // adjust for uncontrolled
+    adjustDateRangePicker(selected)
 
     window.onmousedown = (e) => {
       const isClickedInsideDatePickerContainer =
@@ -141,8 +134,20 @@ const DateRangePicker: React.FC<Props> = ({
     }
   }
 
+  function adjustDateRangePicker(d: DateRangeType) {
+    const adjustDate1 = d.startDate ?? new Date()
+    adjustDatePicker1(adjustDate1)
+    adjustDatePicker2(
+      !d.endDate ||
+        (adjustDate1.getMonth() === d.endDate.getMonth() &&
+          adjustDate1.getFullYear() === d.endDate.getFullYear())
+        ? new Date(adjustDate1.getFullYear(), adjustDate1.getMonth() + 1)
+        : d.endDate
+    )
+  }
+
   /**
-   * @param {Date} d - date from datePicker2 / oriValue(if exist) / today
+   * @param {Date} d - date from datePicker2 / selected(if exist) / today
    * @return {void}
    */
   function adjustDatePicker1(d: Date): void {
@@ -167,57 +172,70 @@ const DateRangePicker: React.FC<Props> = ({
       endDate: datePickerClickCount === 2 ? d : null,
     }
 
-    // re-sort
-    if (
-      datePickerClickCount === 2 &&
-      newDateRange.startDate &&
-      newDateRange.endDate &&
-      newDateRange.endDate < newDateRange.startDate
-    ) {
-      newDateRange = {
-        startDate: newDateRange.endDate,
-        endDate: newDateRange.startDate,
-      }
-    }
+    if (datePickerClickCount === 2) {
+      newDateRange = sortAndResetDateRange(newDateRange)
 
-    if (showFooter) {
-      setSelected(newDateRange)
+      setDatePickerCount(1)
 
-      if (datePickerClickCount === 2) setDatePickerCount(1)
-      else setDatePickerCount(2)
-    } else {
-      setSelected(newDateRange)
+      if (!showFooter) inputRef.current?.blur()
+    } else setDatePickerCount(2)
 
+    setSelected(newDateRange)
+
+    if (!showFooter) {
+      setInputValue(newDateRange)
       if (onChange) onChange(newDateRange)
-
-      if (datePickerClickCount === 2) {
-        setDatePickerCount(1)
-
-        inputRef.current?.blur()
-      } else setDatePickerCount(2)
     }
   }
 
   function handleCancel() {
-    // setSelected(value)
     inputRef.current?.blur()
   }
 
   function handleApply() {
-    if (selected instanceof Date) {
-      if (onChange) onChange(selected)
-      inputRef.current?.blur()
+    setInputValue(selected)
+    if (onChange) onChange(selected)
+    inputRef.current?.blur()
+  }
+
+  /**
+   * Sorts the start and end dates of a date range and resets the hours to 0 (midnight).
+   *
+   * @param {DateRangeType} dateRange - The date range to sort and reset hours.
+   * @returns {DateRangeType} The date range with sorted start and end dates, and hours reset to 0.
+   */
+  function sortAndResetDateRange({
+    startDate,
+    endDate,
+  }: DateRangeType): DateRangeType {
+    if (startDate) startDate.setHours(0, 0, 0, 0)
+    if (endDate) endDate.setHours(0, 0, 0, 0)
+
+    if (!startDate || !endDate) {
+      if (!startDate && endDate)
+        return {
+          startDate: endDate,
+          endDate: null,
+        }
+
+      return { startDate, endDate }
     }
+
+    if (startDate > endDate) [startDate, endDate] = [endDate, startDate]
+
+    return { startDate, endDate }
   }
 
-  let complateValue = []
+  function displayDateRange(d: DateRangeType): string {
+    let mergedValue = []
 
-  if (value && value.startDate) {
-    complateValue.push(formatDateToYYYYMMDD(value.startDate))
-  }
+    for (const key in d) {
+      const dateValue = d[key as keyof DateRangeType]
 
-  if (value && value.endDate) {
-    complateValue.push(formatDateToYYYYMMDD(value.endDate))
+      if (dateValue) mergedValue.push(formatDateToYYYYMMDD(dateValue))
+    }
+
+    return mergedValue.join(" ~ ")
   }
 
   return (
@@ -226,7 +244,7 @@ const DateRangePicker: React.FC<Props> = ({
         ref={inputRef}
         type="text"
         className="block h-9 w-full rounded-md border border-gray-300 bg-gray-50 p-2 text-sm transition focus:border-green-500 focus:ring-green-500"
-        value={complateValue.join(" - ")}
+        value={displayDateRange(inputValue)}
         readOnly
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -306,8 +324,14 @@ const DateRangePicker: React.FC<Props> = ({
                   </button>
                   <button
                     type="button"
-                    className="flex h-9 w-full items-center justify-center rounded-md bg-green-600 px-3 text-white"
+                    className={clsx(
+                      "flex h-9 w-full items-center justify-center rounded-md px-3",
+                      !selected.startDate || !selected.endDate
+                        ? "bg-gray-300 text-white"
+                        : "bg-green-600 text-white"
+                    )}
                     onClick={handleApply}
+                    disabled={!selected.startDate || !selected.endDate}
                   >
                     Apply
                   </button>
