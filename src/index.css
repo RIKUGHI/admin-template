@@ -73,6 +73,14 @@
   #option-container[data-view='2'] {
     @apply bottom-[calc(100%+0.4rem)] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)]
   }
+
+  .top-to-bottom {
+    @apply top-[calc(100%+0.4rem)] shadow-md
+  }
+
+  .bottom-to-top {
+    @apply bottom-[calc(100%+0.4rem)] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)]
+  }
 }
 
 @layer utilities {

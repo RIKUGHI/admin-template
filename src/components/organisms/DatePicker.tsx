@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState, forwardRef } from "react"
 import { formatDateToYYYYMMDD, isSameDate } from "../../utilities/dateUtils"
 import { NullableDate, SingleDatePicker } from "../molecules"
 
@@ -32,6 +32,16 @@ const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
   const [currentYear, setCurrentYear] = useState(date.getFullYear())
 
   useEffect(() => {
+    // auto directions
+    if (
+      datePickerContainerRef.current &&
+      datePickerContainerRef.current.getBoundingClientRect().bottom >
+        window.innerHeight
+    ) {
+      datePickerContainerRef.current.classList.remove("top-to-bottom")
+      datePickerContainerRef.current.classList.add("bottom-to-top")
+    }
+
     if (value && selected && !isSameDate(value, selected)) {
       const adjustDate = value
 
@@ -40,7 +50,7 @@ const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
       setCurrentMonth(adjustDate.getMonth())
       setCurrentYear(adjustDate.getFullYear())
     }
-  }, [value])
+  }, [value, openDatePicker])
 
   function isNullableDate(oriValue: NullableDate) {
     return oriValue === null || oriValue instanceof Date
@@ -93,7 +103,7 @@ const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
       {openDatePicker && (
         <div
           ref={datePickerContainerRef}
-          className="absolute z-10 mt-1.5 flex flex-col rounded-md border border-gray-300 bg-white shadow-md lg:flex-row"
+          className="top-to-bottom absolute z-10 flex flex-col rounded-md border border-gray-300 bg-white lg:flex-row"
         >
           <SingleDatePicker
             id="datePicker1"
