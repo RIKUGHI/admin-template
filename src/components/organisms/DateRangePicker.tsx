@@ -1,10 +1,10 @@
-import clsx from "clsx"
 import { useEffect, useRef, useState } from "react"
 import {
   countDatesInRange,
   formatDateToYYYYMMDD,
   isDateRange,
 } from "../../utilities/dateUtils"
+import { DateRangeConfirmButton, PreviewDate } from "../atoms/datepickerParts"
 import {
   DateRangeType,
   IdDatePickerState,
@@ -355,17 +355,9 @@ const DateRangePicker: React.FC<Props> = ({
               <div className="flex flex-col justify-between space-y-4 border-t border-gray-200 px-6 py-4 md:flex-row md:space-y-0">
                 <div className="flex items-center space-x-5">
                   <div className="flex w-full items-center space-x-2 text-sm font-semibold md:w-auto">
-                    <span className="flex-1 rounded-md bg-gray-100 p-2 text-center md:flex-none">
-                      {selected.startDate
-                        ? formatDateToYYYYMMDD(selected.startDate)
-                        : "YYYY-MM-DD"}
-                    </span>
+                    <PreviewDate date={selected.startDate} />
                     <span className="mt-0.5 h-0.5 w-3 bg-gray-400"></span>
-                    <span className="flex-1 rounded-md bg-gray-100 p-2 text-center md:flex-none">
-                      {selected.endDate
-                        ? formatDateToYYYYMMDD(selected.endDate)
-                        : "YYYY-MM-DD"}
-                    </span>
+                    <PreviewDate date={selected.endDate} />
                   </div>
                   {selected.startDate && selected.endDate && (
                     <span className="hidden text-sm font-semibold md:block">
@@ -376,26 +368,15 @@ const DateRangePicker: React.FC<Props> = ({
                 </div>
 
                 <div className="flex space-x-2">
-                  <button
-                    type="button"
-                    className="flex h-9 w-full items-center justify-center rounded-md px-3"
+                  <DateRangeConfirmButton
+                    label="Cancel"
                     onClick={handleCancel}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className={clsx(
-                      "flex h-9 w-full items-center justify-center rounded-md px-3",
-                      !selected.startDate || !selected.endDate
-                        ? "bg-gray-300 text-white"
-                        : "bg-green-600 text-white"
-                    )}
-                    onClick={handleApply}
+                  />
+                  <DateRangeConfirmButton
+                    label="Apply"
                     disabled={!selected.startDate || !selected.endDate}
-                  >
-                    Apply
-                  </button>
+                    onClick={handleApply}
+                  />
                 </div>
               </div>
             )}
