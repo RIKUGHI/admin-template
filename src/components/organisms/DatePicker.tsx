@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState, forwardRef } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import { formatDateToYYYYMMDD, isSameDate } from "../../utilities/dateUtils"
 import { NullableDate, SingleDatePicker } from "../molecules"
 

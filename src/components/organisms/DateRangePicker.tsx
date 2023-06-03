@@ -67,6 +67,16 @@ const DateRangePicker: React.FC<Props> = ({
   const [currentYear2, setCurrentYear2] = useState(date2.getFullYear())
 
   useEffect(() => {
+    // auto directions
+    if (
+      datePickerContainerRef.current &&
+      datePickerContainerRef.current.getBoundingClientRect().bottom >
+        window.innerHeight
+    ) {
+      datePickerContainerRef.current.classList.remove("top-to-bottom")
+      datePickerContainerRef.current.classList.add("bottom-to-top")
+    }
+
     // adjust for controlled
     if (value) {
       const sortedDateRange = sortAndResetDateRange(value)
@@ -74,7 +84,7 @@ const DateRangePicker: React.FC<Props> = ({
       setInputValue(sortedDateRange)
       adjustDateRangePicker(sortedDateRange)
     }
-  }, [value?.endDate])
+  }, [value?.endDate, openDatePicker])
 
   function handleFocus() {
     setOpenDatePicker(true)
@@ -301,7 +311,7 @@ const DateRangePicker: React.FC<Props> = ({
       {openDatePicker && (
         <div
           ref={datePickerContainerRef}
-          className="absolute z-10 mt-1.5 flex flex-col rounded-md border border-gray-300 bg-white shadow-md lg:flex-row"
+          className="top-to-bottom absolute z-10 flex flex-col rounded-md border border-gray-300 bg-white  lg:flex-row"
         >
           {showShortcuts && (
             <div className="w-full border-b border-gray-200 py-4 lg:w-36 lg:border-r lg:py-6">
