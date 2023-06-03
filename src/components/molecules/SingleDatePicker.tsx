@@ -36,6 +36,7 @@ interface Props {
     idComp: IdDatePickerState
   ) => void
   setSelected: (v: Date) => void
+  onMouseEnterDate?: (v: Date) => void
 }
 
 const SingleDatePicker: React.FC<Props> = ({
@@ -46,6 +47,7 @@ const SingleDatePicker: React.FC<Props> = ({
   setCurrentMonth,
   setCurrentYear,
   setSelected,
+  onMouseEnterDate,
 }) => {
   const days = ["Su", "Mo", "Tu", "We", "Th", "Fri", "Sa"]
   const months = [
@@ -278,6 +280,14 @@ const SingleDatePicker: React.FC<Props> = ({
                         setSelected(new Date(year, month, lostDate))
                       })
                     }
+                    onMouseEnter={
+                      onMouseEnterDate
+                        ? () =>
+                            onMouseEnterDate(
+                              new Date(currentYear, currentMonth - 1, lostDate)
+                            )
+                        : undefined
+                    }
                   />
                 )
                 key++
@@ -308,6 +318,14 @@ const SingleDatePicker: React.FC<Props> = ({
                     onClick={() =>
                       setSelected(new Date(currentYear, currentMonth, i))
                     }
+                    onMouseEnter={
+                      onMouseEnterDate
+                        ? () =>
+                            onMouseEnterDate(
+                              new Date(currentYear, currentMonth, i)
+                            )
+                        : undefined
+                    }
                   />
                 )
                 key++
@@ -326,6 +344,14 @@ const SingleDatePicker: React.FC<Props> = ({
                       handlePrevNext("NEXT", (year, month) => {
                         setSelected(new Date(year, month, date))
                       })
+                    }
+                    onMouseEnter={
+                      onMouseEnterDate
+                        ? () =>
+                            onMouseEnterDate(
+                              new Date(currentYear, currentMonth + 1, date)
+                            )
+                        : undefined
                     }
                   />
                 )

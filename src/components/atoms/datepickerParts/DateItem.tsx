@@ -9,6 +9,7 @@ interface DateItemProps {
   preSelected?: boolean
   selectedType?: SelectedState
   onClick?: () => void
+  onMouseEnter?: () => void
 }
 
 const DateItem: React.FC<DateItemProps> = ({
@@ -19,6 +20,7 @@ const DateItem: React.FC<DateItemProps> = ({
   preSelected,
   selectedType,
   onClick,
+  onMouseEnter,
 }) => {
   return (
     <button
@@ -49,6 +51,7 @@ const DateItem: React.FC<DateItemProps> = ({
         disabled && "rounded-lg hover:bg-green-600/70 hover:text-white/70"
       )}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
     >
       {date}
     </button>

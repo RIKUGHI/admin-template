@@ -39,6 +39,14 @@ const DateRangePicker: React.FC<Props> = ({
 
   const [openDatePicker, setOpenDatePicker] = useState(false)
   const [datePickerClickCount, setDatePickerCount] = useState(1)
+  /**
+   * STE is Start to End
+   * ETS is End to Start
+   */
+  const [directionSelectedRange, setDirectionSelectedRange] = useState<
+    "STE" | "ETS"
+  >("STE")
+  const [hasMouseEnteredDate, setHasMouseEnteredDate] = useState(false)
   const [selected, setSelected] = useState<DateRangeType>(
     value
       ? sortAndResetDateRange(value)
@@ -147,7 +155,7 @@ const DateRangePicker: React.FC<Props> = ({
   }
 
   /**
-   * @param {Date} d - date from datePicker2 / selected(if exist) / today
+   * @param {Date} d - date from datePicker2 / selected / value / today
    * @return {void}
    */
   function adjustDatePicker1(d: Date): void {
@@ -157,7 +165,7 @@ const DateRangePicker: React.FC<Props> = ({
   }
 
   /**
-   * @param {Date} d - date from datePicker1
+   * @param {Date} d - date from datePicker1 / selected / value / today
    * @return {void}
    */
   function adjustDatePicker2(d: Date): void {
@@ -176,15 +184,56 @@ const DateRangePicker: React.FC<Props> = ({
       newDateRange = sortAndResetDateRange(newDateRange)
 
       setDatePickerCount(1)
+      setDirectionSelectedRange("STE")
+      setHasMouseEnteredDate(false)
 
       if (!showFooter) inputRef.current?.blur()
     } else setDatePickerCount(2)
 
-    setSelected(newDateRange)
+    if (!hasMouseEnteredDate) setSelected(newDateRange)
 
     if (!showFooter) {
-      setInputValue(newDateRange)
-      if (onChange) onChange(newDateRange)
+      setInputValue(hasMouseEnteredDate ? selected : newDateRange)
+      if (onChange) onChange(hasMouseEnteredDate ? selected : newDateRange)
+    }
+  }
+
+  function handleMouseEnterDate(d: Date) {
+    if (datePickerClickCount === 2) {
+      let newDateRange: DateRangeType | null = null
+
+      if (directionSelectedRange === "STE" && selected.startDate) {
+        if (d < selected.startDate) {
+          newDateRange = {
+            startDate: d,
+            endDate: selected.startDate,
+          }
+          setDirectionSelectedRange("ETS")
+        } else {
+          newDateRange = {
+            startDate: selected.startDate,
+            endDate: d,
+          }
+        }
+      }
+
+      if (directionSelectedRange === "ETS" && selected.endDate) {
+        if (d > selected.endDate) {
+          newDateRange = {
+            startDate: selected.endDate,
+            endDate: d,
+          }
+          setDirectionSelectedRange("STE")
+        } else {
+          newDateRange = {
+            startDate: d,
+            endDate: selected.endDate,
+          }
+        }
+      }
+
+      if (newDateRange) setSelected(newDateRange)
+      setHasMouseEnteredDate(true)
     }
   }
 
@@ -279,6 +328,7 @@ const DateRangePicker: React.FC<Props> = ({
                 setCurrentMonth={handleSetCurrentMonth}
                 setCurrentYear={handleSetCurrentYear}
                 setSelected={handleSetSelected}
+                onMouseEnterDate={handleMouseEnterDate}
               />
               <SingleDatePicker
                 id="datePicker2"
@@ -288,6 +338,7 @@ const DateRangePicker: React.FC<Props> = ({
                 setCurrentMonth={handleSetCurrentMonth}
                 setCurrentYear={handleSetCurrentYear}
                 setSelected={handleSetSelected}
+                onMouseEnterDate={handleMouseEnterDate}
               />
             </div>
             {showFooter && (
