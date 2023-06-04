@@ -16,12 +16,16 @@ interface Props {
   showFooter?: boolean
   defaultValue?: DateRangeType
   value?: DateRangeType
+  minDate?: Date
+  maxDate?: Date
   onChange?: (v: DateRangeType) => void
 }
 
 const DateRangePicker: React.FC<Props> = ({
   defaultValue,
   value,
+  minDate,
+  maxDate,
   showShortcuts,
   showFooter,
   onChange,
@@ -335,6 +339,8 @@ const DateRangePicker: React.FC<Props> = ({
                 currentMonth={currentMonth1}
                 currentYear={currentYear1}
                 selected={selected}
+                minDate={minDate}
+                maxDate={maxDate}
                 setCurrentMonth={handleSetCurrentMonth}
                 setCurrentYear={handleSetCurrentYear}
                 setSelected={handleSetSelected}
@@ -345,6 +351,8 @@ const DateRangePicker: React.FC<Props> = ({
                 currentMonth={currentMonth2}
                 currentYear={currentYear2}
                 selected={selected}
+                minDate={minDate}
+                maxDate={maxDate}
                 setCurrentMonth={handleSetCurrentMonth}
                 setCurrentYear={handleSetCurrentYear}
                 setSelected={handleSetSelected}

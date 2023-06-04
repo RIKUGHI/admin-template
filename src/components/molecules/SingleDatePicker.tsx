@@ -25,6 +25,8 @@ interface Props {
   currentMonth: number
   currentYear: number
   selected?: NullableDate | DateRangeType
+  minDate?: Date
+  maxDate?: Date
   setCurrentMonth: (
     month: number,
     year: number,
@@ -44,6 +46,8 @@ const SingleDatePicker: React.FC<Props> = ({
   currentMonth,
   currentYear,
   selected,
+  minDate,
+  maxDate,
   setCurrentMonth,
   setCurrentYear,
   setSelected,
@@ -175,6 +179,15 @@ const SingleDatePicker: React.FC<Props> = ({
     return false
   }
 
+  function isDisabled(d: Date) {
+    minDate?.setHours(0, 0, 0, 0)
+    maxDate?.setHours(0, 0, 0, 0)
+
+    return (
+      (minDate ? d < minDate : undefined) || (maxDate ? d > maxDate : undefined)
+    )
+  }
+
   return (
     <div className="flex flex-col p-5">
       <div className="flex items-center justify-between space-x-2 rounded-md border border-gray-200 px-2 py-1.5">
@@ -268,13 +281,19 @@ const SingleDatePicker: React.FC<Props> = ({
                 ).getDay()
 
                 let isSun = day === 0
+                const mergedDate = new Date(
+                  currentYear,
+                  currentMonth - 1,
+                  lostDate
+                )
 
                 dateComps.push(
                   <DateItem
                     key={key}
                     date={lostDate}
                     isSun={isSun}
-                    disabled
+                    extendedDate
+                    disabled={isDisabled(mergedDate)}
                     onClick={() =>
                       handlePrevNext("PREV", (year, month) => {
                         setSelected(new Date(year, month, lostDate))
@@ -282,10 +301,7 @@ const SingleDatePicker: React.FC<Props> = ({
                     }
                     onMouseEnter={
                       onMouseEnterDate
-                        ? () =>
-                            onMouseEnterDate(
-                              new Date(currentYear, currentMonth - 1, lostDate)
-                            )
+                        ? () => onMouseEnterDate(mergedDate)
                         : undefined
                     }
                   />
@@ -295,7 +311,8 @@ const SingleDatePicker: React.FC<Props> = ({
 
               //getting all dates of the month
               for (let i = 1; i <= lastDateofMonth; i++) {
-                let day = new Date(currentYear, currentMonth, i).getDay()
+                const date = new Date(currentYear, currentMonth, i)
+                let day = date.getDay()
 
                 let isSun = day === 0
                 let isToday =
@@ -309,21 +326,13 @@ const SingleDatePicker: React.FC<Props> = ({
                     date={i}
                     isToday={isToday}
                     isSun={isSun}
-                    preSelected={isPreSelected(
-                      new Date(currentYear, currentMonth, i)
-                    )}
-                    selectedType={getSelectedType(
-                      new Date(currentYear, currentMonth, i)
-                    )}
-                    onClick={() =>
-                      setSelected(new Date(currentYear, currentMonth, i))
-                    }
+                    disabled={isDisabled(date)}
+                    preSelected={isPreSelected(date)}
+                    selectedType={getSelectedType(date)}
+                    onClick={() => setSelected(date)}
                     onMouseEnter={
                       onMouseEnterDate
-                        ? () =>
-                            onMouseEnterDate(
-                              new Date(currentYear, currentMonth, i)
-                            )
+                        ? () => onMouseEnterDate(date)
                         : undefined
                     }
                   />
@@ -334,12 +343,14 @@ const SingleDatePicker: React.FC<Props> = ({
               //getting first dates of next month
               for (let i = lastDayofMonth; i < 6; i++) {
                 const date = i - lastDayofMonth + 1
+                const mergedDate = new Date(currentYear, currentMonth + 1, date)
 
                 dateComps.push(
                   <DateItem
                     key={key}
                     date={date}
-                    disabled
+                    extendedDate
+                    disabled={isDisabled(mergedDate)}
                     onClick={() =>
                       handlePrevNext("NEXT", (year, month) => {
                         setSelected(new Date(year, month, date))
@@ -347,10 +358,7 @@ const SingleDatePicker: React.FC<Props> = ({
                     }
                     onMouseEnter={
                       onMouseEnterDate
-                        ? () =>
-                            onMouseEnterDate(
-                              new Date(currentYear, currentMonth + 1, date)
-                            )
+                        ? () => onMouseEnterDate(mergedDate)
                         : undefined
                     }
                   />

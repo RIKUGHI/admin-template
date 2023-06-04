@@ -5,10 +5,18 @@ import { NullableDate, SingleDatePicker } from "../molecules"
 interface Props {
   defaultValue?: NullableDate
   value?: NullableDate
+  minDate?: Date
+  maxDate?: Date
   onChange?: (v: NullableDate) => void
 }
 
-const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
+const DatePicker: FC<Props> = ({
+  defaultValue,
+  value,
+  minDate,
+  maxDate,
+  onChange,
+}) => {
   if (
     (defaultValue && !isNullableDate(defaultValue)) ||
     (value && !isNullableDate(value))
@@ -110,6 +118,8 @@ const DatePicker: FC<Props> = ({ defaultValue, value, onChange }) => {
             currentMonth={currentMonth}
             currentYear={currentYear}
             selected={selected}
+            minDate={minDate}
+            maxDate={maxDate}
             setCurrentMonth={handleSetCurrentMonth}
             setCurrentYear={handleSetCurrentYear}
             setSelected={handleSetSelected}

@@ -5,6 +5,7 @@ interface DateItemProps {
   date: number
   isToday?: boolean
   isSun?: boolean
+  extendedDate?: boolean
   disabled?: boolean
   preSelected?: boolean
   selectedType?: SelectedState
@@ -16,6 +17,7 @@ const DateItem: React.FC<DateItemProps> = ({
   date,
   isToday,
   isSun,
+  extendedDate,
   disabled,
   preSelected,
   selectedType,
@@ -26,7 +28,7 @@ const DateItem: React.FC<DateItemProps> = ({
     <button
       tabIndex={-1}
       className={clsx(
-        "flex h-10 w-10 items-center justify-center font-semibold",
+        "relative flex h-10 w-10 items-center justify-center font-semibold",
         selectedType
           ? [
               "bg-green-600 text-white",
@@ -38,21 +40,33 @@ const DateItem: React.FC<DateItemProps> = ({
             ]
           : isToday || preSelected
           ? "text-green-600"
-          : disabled
+          : extendedDate
           ? isSun
             ? "text-red-300"
             : "text-gray-300"
           : isSun && "text-red-600",
         preSelected && "bg-green-50",
-        !disabled &&
+        !extendedDate &&
           !selectedType &&
           !preSelected &&
+          !disabled &&
           "rounded-lg hover:bg-green-600 hover:text-white",
-        disabled && "rounded-lg hover:bg-green-600/70 hover:text-white/70"
+        extendedDate &&
+          !disabled &&
+          "rounded-lg hover:bg-green-600/70 hover:text-white/70"
       )}
+      disabled={disabled}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
     >
+      {disabled && (
+        <span
+          className={clsx(
+            "absolute h-px w-1/3",
+            extendedDate ? "bg-gray-300" : "bg-gray-900"
+          )}
+        ></span>
+      )}
       {date}
     </button>
   )
