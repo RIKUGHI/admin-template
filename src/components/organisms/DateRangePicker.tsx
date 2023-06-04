@@ -4,20 +4,29 @@ import {
   formatDateToYYYYMMDD,
   isDateRange,
 } from "../../utilities/dateUtils"
-import { DateRangeConfirmButton, PreviewDate } from "../atoms/datepickerParts"
+import {
+  DateRangeConfirmButton,
+  PreviewDate,
+  ShortcutItem,
+} from "../atoms/datepickerParts"
 import {
   DateRangeType,
   IdDatePickerState,
   SingleDatePicker,
 } from "../molecules"
 
+type ShortcutType = {
+  label: string
+  range: DateRangeType
+}
 interface Props {
-  showShortcuts?: boolean
-  showFooter?: boolean
   defaultValue?: DateRangeType
   value?: DateRangeType
   minDate?: Date
   maxDate?: Date
+  /** default is today if true */
+  shortcutList?: boolean | ShortcutType[]
+  showFooter?: boolean
   onChange?: (v: DateRangeType) => void
 }
 
@@ -26,7 +35,7 @@ const DateRangePicker: React.FC<Props> = ({
   value,
   minDate,
   maxDate,
-  showShortcuts,
+  shortcutList,
   showFooter,
   onChange,
 }) => {
@@ -261,6 +270,22 @@ const DateRangePicker: React.FC<Props> = ({
     inputRef.current?.blur()
   }
 
+  function handleShortCut(d: DateRangeType) {
+    if (d === null || !isDateRange(d))
+      throw new Error("The value structure must be of type DateRangeType")
+
+    const sortedDateRange = sortAndResetDateRange(d)
+
+    setSelected(sortedDateRange)
+    adjustDateRangePicker(sortedDateRange)
+
+    if (!showFooter) {
+      setInputValue(sortedDateRange)
+      if (onChange) onChange(sortedDateRange)
+      inputRef.current?.blur()
+    }
+  }
+
   /**
    * Sorts the start and end dates of a date range and resets the hours to 0 (midnight).
    *
@@ -317,21 +342,37 @@ const DateRangePicker: React.FC<Props> = ({
           ref={datePickerContainerRef}
           className="top-to-bottom absolute z-10 flex flex-col rounded-md border border-gray-300 bg-white  lg:flex-row"
         >
-          {showShortcuts && (
-            <div className="w-full border-b border-gray-200 py-4 lg:w-36 lg:border-r lg:py-6">
-              <ul className="grid grid-cols-2 text-xs md:grid-cols-4 lg:grid-cols-1">
-                {["Today", "Last 7 days", "Last 14 days", "Last 30 days"].map(
-                  (label, i) => (
-                    <li key={i} className="rounded-md">
-                      <button className="w-full px-6 py-1.5 text-left leading-5 hover:bg-gray-50 hover:text-green-600">
-                        {label}
-                      </button>
+          {shortcutList &&
+            (() => {
+              const defaultShortcutList: ShortcutType[] = [
+                {
+                  label: "Today",
+                  range: {
+                    startDate: new Date(),
+                    endDate: new Date(),
+                  },
+                },
+              ]
+
+              if (typeof shortcutList === "object" && shortcutList.length > 0)
+                defaultShortcutList.push(...shortcutList)
+
+              return (
+                <div className="w-full border-b border-gray-200 py-4 lg:w-36 lg:border-r lg:py-6">
+                  <ul className="grid grid-cols-2 text-xs md:grid-cols-4 lg:grid-cols-1">
+                    <li className="rounded-md">
+                      {defaultShortcutList.map((shortcut, i) => (
+                        <ShortcutItem
+                          key={i}
+                          label={shortcut.label}
+                          onClik={() => handleShortCut(shortcut.range)}
+                        />
+                      ))}
                     </li>
-                  )
-                )}
-              </ul>
-            </div>
-          )}
+                  </ul>
+                </div>
+              )
+            })()}
           <div className="flex flex-col">
             <div className="flex flex-col divide-x divide-gray-200 md:flex-row">
               <SingleDatePicker
