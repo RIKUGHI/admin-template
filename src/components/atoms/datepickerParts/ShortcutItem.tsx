@@ -1,5 +1,4 @@
 import { FC } from "react"
-import { DateRangeType } from "../../molecules"
 
 interface Props {
   label: string

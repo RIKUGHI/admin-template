@@ -1,5 +1,9 @@
 import { FC, useEffect, useRef, useState } from "react"
-import { formatDateToYYYYMMDD, isSameDate } from "../../utilities/dateUtils"
+import {
+  formatDateToYYYYMMDD,
+  isNullableDate,
+  isSameDate,
+} from "../../utilities/dateUtils"
 import { NullableDate, SingleDatePicker } from "../molecules"
 
 interface Props {
@@ -40,16 +44,6 @@ const DatePicker: FC<Props> = ({
   const [currentYear, setCurrentYear] = useState(date.getFullYear())
 
   useEffect(() => {
-    // auto directions
-    if (
-      datePickerContainerRef.current &&
-      datePickerContainerRef.current.getBoundingClientRect().bottom >
-        window.innerHeight
-    ) {
-      datePickerContainerRef.current.classList.remove("top-to-bottom")
-      datePickerContainerRef.current.classList.add("bottom-to-top")
-    }
-
     if (value && selected && !isSameDate(value, selected)) {
       const adjustDate = value
 
@@ -58,14 +52,20 @@ const DatePicker: FC<Props> = ({
       setCurrentMonth(adjustDate.getMonth())
       setCurrentYear(adjustDate.getFullYear())
     }
-  }, [value, openDatePicker])
-
-  function isNullableDate(oriValue: NullableDate) {
-    return oriValue === null || oriValue instanceof Date
-  }
+  }, [value])
 
   function handleFocus() {
     setOpenDatePicker(true)
+    setTimeout(() => {
+      // auto directions
+      datePickerContainerRef.current?.classList.replace("hidden", "flex")
+      datePickerContainerRef.current?.classList.add(
+        datePickerContainerRef.current.getBoundingClientRect().bottom + 10 >
+          window.innerHeight
+          ? "bottom-to-top"
+          : "top-to-bottom"
+      )
+    }, 0)
 
     window.onmousedown = (e) => {
       const isClickedInsideDatePickerContainer =
@@ -111,7 +111,7 @@ const DatePicker: FC<Props> = ({
       {openDatePicker && (
         <div
           ref={datePickerContainerRef}
-          className="top-to-bottom absolute z-10 flex flex-col rounded-md border border-gray-300 bg-white lg:flex-row"
+          className="absolute z-10 hidden flex-col rounded-md border border-gray-300 bg-white lg:flex-row"
         >
           <SingleDatePicker
             id="datePicker1"
