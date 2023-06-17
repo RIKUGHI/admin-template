@@ -91,16 +91,6 @@ const DateRangePicker: React.FC<Props> = ({
 
   function handleFocus() {
     setOpenDatePicker(true)
-    setTimeout(() => {
-      // auto directions
-      datePickerContainerRef.current?.classList.replace("hidden", "flex")
-      datePickerContainerRef.current?.classList.add(
-        datePickerContainerRef.current.getBoundingClientRect().bottom + 10 >
-          window.innerHeight
-          ? "bottom-to-top"
-          : "top-to-bottom"
-      )
-    }, 0)
 
     // adjust for uncontrolled / controlled
     adjustDateRangePicker(selected)
@@ -340,7 +330,7 @@ const DateRangePicker: React.FC<Props> = ({
       {openDatePicker && (
         <div
           ref={datePickerContainerRef}
-          className="absolute z-10 hidden flex-col rounded-md border border-gray-300 bg-white  lg:flex-row"
+          className="top-to-bottom absolute z-10 flex flex-col rounded-md border border-gray-300 bg-white md:flex-row"
         >
           {shortcutList &&
             (() => {
@@ -358,23 +348,23 @@ const DateRangePicker: React.FC<Props> = ({
                 defaultShortcutList.push(...shortcutList)
 
               return (
-                <div className="w-full border-b border-gray-200 py-4 lg:w-36 lg:border-r lg:py-6">
-                  <ul className="grid grid-cols-2 text-xs md:grid-cols-4 lg:grid-cols-1">
-                    <li className="rounded-md">
-                      {defaultShortcutList.map((shortcut, i) => (
+                <div className="hidden w-full border-b border-gray-200 py-4 sm:block md:w-36 md:border-r md:py-6">
+                  <ul className="grid grid-cols-2 text-xs md:grid-cols-1">
+                    {defaultShortcutList.map((shortcut, i) => (
+                      <li key={i} className="rounded-md">
                         <ShortcutItem
                           key={i}
                           label={shortcut.label}
                           onClik={() => handleShortCut(shortcut.range)}
                         />
-                      ))}
-                    </li>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               )
             })()}
           <div className="flex flex-col">
-            <div className="flex flex-col divide-x divide-gray-200 md:flex-row">
+            <div className="flex flex-col divide-x divide-gray-200 sm:flex-row">
               <SingleDatePicker
                 id="datePicker1"
                 currentMonth={currentMonth1}
