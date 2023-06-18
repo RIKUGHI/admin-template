@@ -24,6 +24,9 @@ interface Props {
   value?: DateRangeType
   minDate?: Date
   maxDate?: Date
+  displayFormat?: (d: Date) => string
+  placeholder?: string
+  separator?: string
   /** default is today if true */
   shortcutList?: boolean | ShortcutType[]
   showFooter?: boolean
@@ -35,6 +38,9 @@ const DateRangePicker: React.FC<Props> = ({
   value,
   minDate,
   maxDate,
+  displayFormat,
+  placeholder,
+  separator,
   shortcutList,
   showFooter,
   onChange,
@@ -310,10 +316,15 @@ const DateRangePicker: React.FC<Props> = ({
     for (const key in d) {
       const dateValue = d[key as keyof DateRangeType]
 
-      if (dateValue) mergedValue.push(formatDateToYYYYMMDD(dateValue))
+      if (dateValue)
+        mergedValue.push(
+          displayFormat
+            ? displayFormat(dateValue)
+            : formatDateToYYYYMMDD(dateValue)
+        )
     }
 
-    return mergedValue.join(" ~ ")
+    return mergedValue.join(separator ?? " ~ ")
   }
 
   return (
@@ -348,7 +359,7 @@ const DateRangePicker: React.FC<Props> = ({
                 defaultShortcutList.push(...shortcutList)
 
               return (
-                <div className="hidden w-full border-b border-gray-200 py-4 sm:block md:w-36 md:border-r md:py-6">
+                <div className="hidden w-full border-b border-gray-200 py-4 sm:block md:w-36 md:border-b-0 md:border-r md:py-6">
                   <ul className="grid grid-cols-2 text-xs md:grid-cols-1">
                     {defaultShortcutList.map((shortcut, i) => (
                       <li key={i} className="rounded-md">
@@ -394,9 +405,17 @@ const DateRangePicker: React.FC<Props> = ({
               <div className="flex flex-col justify-between space-y-4 border-t border-gray-200 px-6 py-4 md:flex-row md:space-y-0">
                 <div className="flex items-center space-x-5">
                   <div className="flex w-full items-center space-x-2 text-sm font-semibold md:w-auto">
-                    <PreviewDate date={selected.startDate} />
+                    <PreviewDate
+                      date={selected.startDate}
+                      placeholder={placeholder}
+                      displayFormat={displayFormat}
+                    />
                     <span className="mt-0.5 h-0.5 w-3 bg-gray-400"></span>
-                    <PreviewDate date={selected.endDate} />
+                    <PreviewDate
+                      date={selected.endDate}
+                      placeholder={placeholder}
+                      displayFormat={displayFormat}
+                    />
                   </div>
                   {selected.startDate && selected.endDate && (
                     <span className="hidden text-sm font-semibold md:block">

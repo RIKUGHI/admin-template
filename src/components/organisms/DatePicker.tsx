@@ -11,6 +11,7 @@ interface Props {
   value?: NullableDate
   minDate?: Date
   maxDate?: Date
+  displayFormat?: (d: Date) => string
   onChange?: (v: NullableDate) => void
 }
 
@@ -19,6 +20,7 @@ const DatePicker: FC<Props> = ({
   value,
   minDate,
   maxDate,
+  displayFormat,
   onChange,
 }) => {
   if (
@@ -103,7 +105,13 @@ const DatePicker: FC<Props> = ({
         ref={inputRef}
         type="text"
         className="block h-9 w-full rounded-md border border-gray-300 bg-gray-50 p-2 text-sm transition focus:border-green-500 focus:ring-green-500"
-        value={selected instanceof Date ? formatDateToYYYYMMDD(selected) : ""}
+        value={
+          selected instanceof Date
+            ? displayFormat
+              ? displayFormat(selected)
+              : formatDateToYYYYMMDD(selected)
+            : ""
+        }
         readOnly
         onFocus={handleFocus}
         onBlur={handleBlur}
