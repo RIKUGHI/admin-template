@@ -100,6 +100,9 @@ const Select2: FC<SelectProps> = ({
         isFirstKeyIsArrowUp = false
       }
 
+      // must be removed first
+      optionContainerRef.current?.classList.remove("hidden")
+
       if (currentOptions.length > 0) {
         addSemiActive()
         handleScrolling()
@@ -119,21 +122,13 @@ const Select2: FC<SelectProps> = ({
         if (e.key == "ArrowDown" || e.key == "ArrowUp") e.preventDefault()
       }
 
-      if (
-        optionContainerRef.current &&
-        optionContainerRef.current.getBoundingClientRect().bottom >
+      // auto direction
+      optionContainerRef.current?.classList.add(
+        optionContainerRef.current.getBoundingClientRect().bottom + 10 >
           window.innerHeight
-      ) {
-        /**
-         * The direction of the option container
-         *
-         * 2 different views (data-view)
-         *
-         * 1: Top to Bottom
-         * 2: Bottom to Top
-         */
-        optionContainerRef.current.setAttribute("data-view", "2")
-      }
+          ? "bottom-to-top"
+          : "top-to-bottom"
+      )
     } else {
       window.onmousedown = null
       window.onkeydown = null
@@ -406,8 +401,7 @@ const Select2: FC<SelectProps> = ({
         <div
           ref={optionContainerRef}
           id="option-container"
-          className="scrollbar absolute inset-x-0 z-10 max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1"
-          data-view={1}
+          className="scrollbar absolute inset-x-0 z-10 hidden max-h-[300px] overflow-y-auto rounded-md border border-gray-300 bg-white py-1"
           onMouseLeave={handleMouseLeave}
         >
           <ul>

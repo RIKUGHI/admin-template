@@ -5,7 +5,7 @@
 @layer components {
   .scrollbar-interactive {
     mask-image: linear-gradient(to top, transparent, black),
-    linear-gradient(to left, transparent 8px, black 8px);
+      linear-gradient(to left, transparent 8px, black 8px);
     mask-size: 100% 20000px;
     mask-position: left bottom;
     -webkit-mask-image: linear-gradient(to top, transparent, black),
@@ -19,42 +19,42 @@
   }
 
   .scrollbar::-webkit-scrollbar {
-    @apply w-2 h-2
-  } 
+    @apply h-2 w-2;
+  }
 
   .scrollbar::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    @apply bg-gray-500
+    @apply bg-gray-500;
   }
 
-  aside[data-view='1'] div#wrapper {
-    @apply w-60 max-w-[240px]
+  aside[data-view="1"] div#wrapper {
+    @apply w-60 max-w-[240px];
   }
 
-  aside[data-view='2'] div#wrapper {
-    @apply w-16
+  aside[data-view="2"] div#wrapper {
+    @apply w-16;
   }
 
-  aside[data-view='2'] div#wrapper-menu {
-    @apply px-[15px]
+  aside[data-view="2"] div#wrapper-menu {
+    @apply px-[15px];
   }
 
-  aside[data-view='1'] div#wrapper-sub-menu,
-  aside[data-view='2'] div#wrapper-sub-menu {
-    @apply max-h-0 overflow-hidden
+  aside[data-view="1"] div#wrapper-sub-menu,
+  aside[data-view="2"] div#wrapper-sub-menu {
+    @apply max-h-0 overflow-hidden;
   }
 
-  aside[data-view='2']:hover div#wrapper {
-    @apply w-60
+  aside[data-view="2"]:hover div#wrapper {
+    @apply w-60;
   }
 
-  aside[data-view='1'] div#wrapper-menu,
-  aside[data-view='2']:hover div#wrapper-menu {
-    @apply px-2
+  aside[data-view="1"] div#wrapper-menu,
+  aside[data-view="2"]:hover div#wrapper-menu {
+    @apply px-2;
   }
 
-  aside[data-view='1'] div#wrapper-sub-menu.active-wrapper-sub,
-  aside[data-view='2']:hover div#wrapper-sub-menu.active-wrapper-sub {
+  aside[data-view="1"] div#wrapper-sub-menu.active-wrapper-sub,
+  aside[data-view="2"]:hover div#wrapper-sub-menu.active-wrapper-sub {
     /**
      * Calculate max-h-[?]
      * a = 36px is height of NavigationLink component
@@ -63,28 +63,49 @@
      * d = 2 is number of space-y-1, 
      * max-h-[calc(a*b+c*d)]
      */
-    @apply max-h-[calc(36px*3+4px*2)] mt-1
-  }
-
-  #option-container[data-view='1'] {
-    @apply top-[calc(100%+0.4rem)] shadow-md
-  }
-
-  #option-container[data-view='2'] {
-    @apply bottom-[calc(100%+0.4rem)] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)]
+    @apply mt-1 max-h-[calc(36px*3+4px*2)];
   }
 
   .top-to-bottom {
-    @apply top-[calc(100%+0.4rem)] shadow-md
+    @apply top-[calc(100%+0.4rem)] shadow-md;
   }
 
   .bottom-to-top {
-    @apply bottom-[calc(100%+0.4rem)] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)]
+    @apply bottom-[calc(100%+0.4rem)] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)];
+  }
+
+  .toast-container {
+    @apply fixed m-[10px] flex w-[300px] flex-col gap-2;
+  }
+
+  .toast-container[data-position^="top-"] {
+    top: 0;
+  }
+
+  .toast-container[data-position^="bottom-"] {
+    bottom: 0;
+  }
+
+  .toast-container[data-position$="-right"] {
+    right: 0;
+  }
+
+  .toast-container[data-position$="-left"] {
+    left: 0;
+  }
+
+  .toast-container[data-position$="-center"] {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .toast {
+    @apply bb relative box-border cursor-pointer rounded-md bg-white p-4 after:absolute after:right-1 after:top-0.5 after:content-['\00D7'];
   }
 }
 
 @layer utilities {
   .bb {
-    @apply border border-black
+    @apply border border-black;
   }
 }
