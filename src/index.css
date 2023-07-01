@@ -99,8 +99,41 @@
     transform: translateX(-50%);
   }
 
+  .toast.progress::before {
+    width: calc(100% * var(--progress));
+    @apply absolute inset-x-0 bottom-0 h-1.5 bg-green-600 content-empty;
+  }
+
+  .toast.can-close::after {
+    content: "\00D7";
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 20px;
+  }
+
   .toast {
-    @apply bb relative box-border cursor-pointer rounded-md bg-white p-4 after:absolute after:right-1 after:top-0.5 after:content-['\00D7'];
+    @apply relative box-border cursor-pointer overflow-hidden rounded-md bg-white p-5 shadow-md transition-transform duration-300 ease-in-out after:absolute after:right-1 after:top-0.5;
+  }
+
+  .toast-container[data-position$="-right"] .toast {
+    transform: translateX(110%);
+  }
+
+  .toast-container[data-position$="-left"] .toast {
+    transform: translateX(-110%);
+  }
+
+  .toast-container[data-position="top-center"] .toast {
+    transform: translateY(-100vh);
+  }
+
+  .toast-container[data-position="bottom-center"] .toast {
+    transform: translateY(100vh);
+  }
+
+  .toast-container .toast.show {
+    transform: translate(0, 0);
   }
 }
 
